@@ -14,8 +14,22 @@ pip install -r requirements.txt
 DB docker setup
 ```
 # mysql Dockerfile
+docker build -f mysql.Dockerfile -t custom_mysql .
+docker run -p 55000:3306 -d custom_mysql
+
 # MongoDB Dockerfile
-# Redis Dockerfile
+docker build -f mongoDB.Dockerfile -t custom_mongo .
+docker run -p 27000:3306 -d custom_mongo
+
+Studio 3T
+<Server>
+Server: localhost
+Port: 27000
+<Authentication>
+User name: root
+password: password
+Authentication DB: admin
+
 ```
 
 
