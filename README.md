@@ -1,7 +1,8 @@
 ## 環境設定
 
-- 大家用的python是哪個版本?
-- 建議大家裝autopep8套件
+- 大家用的python是哪個版本? 3.12
+- 建議大家裝autopep8套件 (施老師還有推很多extension我們再慢慢選用)
+
 
 ```
 # 暫時先用venv，之後可以再換到別的
@@ -13,8 +14,22 @@ pip install -r requirements.txt
 DB docker setup
 ```
 # mysql Dockerfile
+docker build -f mysql.Dockerfile -t custom_mysql .
+docker run -p 55000:3306 -d custom_mysql
+
 # MongoDB Dockerfile
-# Redis Dockerfile
+docker build -f mongoDB.Dockerfile -t custom_mongo .
+docker run -p 27000:3306 -d custom_mongo
+
+Studio 3T
+<Server>
+Server: localhost
+Port: 27000
+<Authentication>
+User name: root
+password: password
+Authentication DB: admin
+
 ```
 
 
@@ -37,7 +52,7 @@ DB docker setup
 - 將檔案放google drive或是別的雲端
 - 把連結放在這個readme下面的External file listing
 
-### commit message 規定
+### commit message 規定 (暫定)
 - 中文敘述為主(可以寫越細越好)
 - 名字 / 功能簡述 / 日期 /n 功能細節
 ```
