@@ -153,3 +153,4 @@ cython_debug/
 logs/*
 *.csv
 gcp_creds/*
+mrt_explore_harry.ipynb

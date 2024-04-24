@@ -7,7 +7,8 @@
 ```
 # 暫時先用venv，之後可以再換到別的
 python -m venv .venv
-source .venv\Scripts\activate
+source .venv\Scripts\activate (Mac)
+.venv\Scripts\activate.ps1 (Window)
 pip install -r requirements.txt
 ```
 
