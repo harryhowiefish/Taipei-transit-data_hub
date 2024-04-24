@@ -152,3 +152,4 @@ cython_debug/
 #.idea/
 logs/*
 *.csv
+gcp_creds/*
