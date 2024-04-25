@@ -26,24 +26,25 @@ pip install -r requirements.txt
 概念跟airflow的 -v 目的一樣，是把資料存到local電腦裡
 但是這個存的位置給Docker volume去管理
 
-MySQL Docker
+#### ---MySQL Docker---
+建立一個docker管理的空間（資料夾）
 ```
-# 建立一個docker管理的空間（資料夾）
 docker volume create mysql_volume
-
-# 用repo裡面的mysql.Dockerfile建立起image
+```
+用repo裡面的mysql.Dockerfile建立起image
+```
 docker build -f mysql.Dockerfile -t custom_mysql .
-
-# 跑建立好的image + port & volume binding
-docker run -p 55000:3306 -v mysql_volume:/var/lib/mysql -d custom_mysql
 ```
-MongoDB Docker（指令幾乎都跟上面一樣）
+跑建立好的image + port & volume binding
+```
+docker run -p 55000:3306 -v mysql_volume:/var/lib/mysql --name mysql -d custom_mysql
+```
+#### ---MongoDB Docker---
 
 ```
-# MongoDB Dockerfile
 docker volume create mongodb_volume
 docker build -f mongoDB.Dockerfile -t custom_mongo .
-docker run -p 27000:3306 -v mongodb_volume:/data/db -d custom_mongo
+docker run -p 27000:27017 -v mongodb_volume:/data/db  --name mongo -d custom_mongo
 ```
 如果資料庫被完壞了，就把container跟volume刪掉\
 然後重新跑volume create跟run就好了（不用重build）
