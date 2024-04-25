@@ -1,0 +1,8 @@
+{
+    "conventionalCommits.scopes": [
+        "youbike",
+        "bus",
+        "MRT",
+        "parking"
+    ]
+}

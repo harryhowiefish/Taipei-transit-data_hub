@@ -1,26 +1,56 @@
 ## 環境設定
 
-- 大家用的python是哪個版本? 3.12
 - 建議大家裝autopep8套件 (施老師還有推很多extension我們再慢慢選用)
 
+### VENV setup
+暫時先用venv，之後可以再換到別的\
+venv的目的是切出一個專門給這個專案使用的python enviornment\
+優點是不會有版本衝突，有需要也可以快速重設
 
 ```
-# 暫時先用venv，之後可以再換到別的
-python -m venv .venv
-source .venv\Scripts\activate
+# make一個venv 位置在.venv的資料夾裡
+python -m venv .venv  
+
+#Mac 切換到venv裡面
+source .venv/bin/activate
+
+#Powershell 切換到venv裡面
+.venv\Scripts\Activate.ps1
+
+#把大家都需要用的套件裝起來
 pip install -r requirements.txt
 ```
 
-DB docker setup
+### DB docker setup
+這裡加入了老師沒有特別提到的Volume\
+概念跟airflow的 -v 目的一樣，是把資料存到local電腦裡
+但是這個存的位置給Docker volume去管理
+
+#### ---MySQL Docker---
+建立一個docker管理的空間（資料夾）
 ```
-# mysql Dockerfile
+docker volume create mysql_volume
+```
+用repo裡面的mysql.Dockerfile建立起image
+```
 docker build -f mysql.Dockerfile -t custom_mysql .
-docker run -p 55000:3306 -d custom_mysql
+```
+跑建立好的image + port & volume binding
+```
+docker run -p 55000:3306 -v mysql_volume:/var/lib/mysql --name mysql -d custom_mysql
+```
+#### ---MongoDB Docker---
 
-# MongoDB Dockerfile
+```
+docker volume create mongodb_volume
 docker build -f mongoDB.Dockerfile -t custom_mongo .
-docker run -p 27000:3306 -d custom_mongo
+docker run -p 27000:27017 -v mongodb_volume:/data/db  --name mongo -d custom_mongo
+```
+如果資料庫被完壞了，就把container跟volume刪掉\
+然後重新跑volume create跟run就好了（不用重build）
 
+#### 用Studio 3T連到MongoDB
+```
 Studio 3T
 <Server>
 Server: localhost
@@ -29,10 +59,7 @@ Port: 27000
 User name: root
 password: password
 Authentication DB: admin
-
 ```
-
-
 
 
 ## git best practice
