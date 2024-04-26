@@ -1,6 +1,6 @@
 ## 環境設定
 
-- 建議大家裝autopep8套件 (施老師還有推很多extension我們再慢慢選用)
+- 建議大家裝autopep8, Conventional Commit套件 (施老師還有推很多extension我們再慢慢選用)
 
 ### VENV setup
 暫時先用venv，之後可以再換到別的\
@@ -19,6 +19,11 @@ source .venv/bin/activate
 
 #把大家都需要用的套件裝起來
 pip install -r requirements.txt
+
+#加入pre-commit的檢查機制
+pre-commit install
+pre-commit install --hook-type commit-msg
+
 ```
 
 ### DB docker setup
