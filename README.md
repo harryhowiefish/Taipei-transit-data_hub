@@ -1,3 +1,12 @@
+## 專案連結：
+
+[分工表](https://docs.google.com/spreadsheets/d/192cv0yhH5I2HEuUncVxM5WYClSlzizC1hz-yZv_hMn4/edit#gid=1988742745)
+
+[ER Diagram](https://dbdiagram.io/d/Project-combined-662b04d803593b6b61012192)
+
+[架構圖](https://lucid.app/lucidchart/b1978d28-7162-4634-b3ce-640b2b7bc1a8/edit?viewport_loc=-1597%2C35%2C2365%2C1367%2C0_0&invitationId=inv_5f9fba4b-a798-44a4-b7c7-0c9a7189b971)
+
+
 ## 環境設定
 
 - 建議大家裝autopep8, Conventional Commit套件 (施老師還有推很多extension我們再慢慢選用)
@@ -57,13 +66,7 @@ docker run -p 27000:27017 -v mongodb_volume:/data/db  --name mongo -d custom_mon
 #### 用Studio 3T連到MongoDB
 ```
 Studio 3T
-<Server>
-Server: localhost
-Port: 27000
-<Authentication>
-User name: root
-password: password
-Authentication DB: admin
+mongodb://root:password@localhost:27000
 ```
 
 
@@ -74,27 +77,16 @@ Authentication DB: admin
 ```
 ├── main (protected)
 ├── develop (protected)
-    ├── feature_xxx_name
-    ├── fix_xxx_name
-    └── unit_test_name
+    ├── Laura
+    ├── Andy
+    ├── Taylor
+    ├── Sam
+    └── Harry
 ```
 ### 上傳檔案注意事項（超重要）
-如果有csv跟json檔超過10MB，請不要commit到git。請依照下面流程操作：
+如果有csv跟json檔超過500KB，請不要commit到git。請依照下面流程操作：
 - 把檔案名稱放進gitignore（或是小心不要stage進commit）
-- 將檔案放google drive或是別的雲端
-- 把連結放在這個readme下面的External file listing
-
-### commit message 規定 (暫定)
-- 中文敘述為主(可以寫越細越好)
-- 名字 / 功能簡述 / 日期 /n 功能細節
-```
-# commit message example
-
-Harry / 資料庫DDL / 04_15
-- user資料表
-- SKU資料表
-- sales資料表
-```
+- 將檔案放GCS（暫定，相關細節待補）
 
 ## PR (pull request)
 
@@ -115,4 +107,3 @@ Harry / 資料庫DDL / 04_15
     - 審核後，完成PR（把原branch刪除）
     - 完成PR後在群組內告知大家，讓大家去把develop merge進自己的branch
 
-## External file listing
