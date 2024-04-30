@@ -132,12 +132,12 @@ CREATE TABLE `bus_station` (
 );
 
 CREATE TABLE `duty_status_detail` (
-  `duty_status` int,
+  `duty_status` int PRIMARY KEY,
   `description` varchar(20)
 );
 
 CREATE TABLE `bus_status_detail` (
-  `bus_status` int,
+  `bus_status` int PRIMARY KEY,
   `description` varchar(20)
 );
 
@@ -153,7 +153,7 @@ CREATE TABLE `mrt_station` (
   `city_code` char(3),
   `district` varchar(10),
   `bike_allow_on_holiday` bool,
-  `create_time` timstamp,
+  `create_time` timestamp,
   `update_time` timestamp
 );
 
@@ -163,7 +163,7 @@ CREATE TABLE `mrt_usage_history` (
   `exit_count` int,
   `source_date` date,
   `source_hour` int,
-  `create_time` timstamp
+  `create_time` timestamp
 );
 
 CREATE TABLE `mrt_realtime_arrival` (
@@ -171,7 +171,7 @@ CREATE TABLE `mrt_realtime_arrival` (
   `destination_id` varchar(10),
   `countdown` time,
   `source_time` timestamp,
-  `create_time` timstamp,
+  `create_time` timestamp,
   PRIMARY KEY (`mrt_station_id`, `destination_id`, `create_time`)
 );
 
@@ -185,7 +185,7 @@ CREATE TABLE `mrt_realtime_crowded` (
   `cart5` int,
   `cart6` int,
   `source_time` timestamp,
-  `create_time` timstamp,
+  `create_time` timestamp,
   PRIMARY KEY (`mrt_station_id`, `direction`, `create_time`)
 );
 
@@ -193,9 +193,9 @@ CREATE TABLE `mrt_parking` (
   `mrt_ps_id` int PRIMARY KEY,
   `ps_name` varchar(20),
   `parking_type` char(2),
-  `mrt_station_id` varchar(10),
+  `mrt_station_id` int,
   `park_total_no` int,
-  `create_time` timstamp,
+  `create_time` timestamp,
   `update_time` timestamp
 );
 
@@ -203,14 +203,14 @@ CREATE TABLE `mrt_realtime_parking` (
   `mrt_parking_id` int,
   `park_now_no` int,
   `source_time` timestamp,
-  `create_time` timstamp,
+  `create_time` timestamp,
   PRIMARY KEY (`mrt_parking_id`, `create_time`)
 );
 
 CREATE TABLE `parking_station` (
   `ps_id` int PRIMARY KEY,
   `ps_name` varchar(200),
-  `city_code` varchar(50),
+  `city_code` char(3),
   `district` varchar(50),
   `address` varchar(500),
   `total_space` int,
@@ -270,12 +270,13 @@ ALTER TABLE `mrt_realtime_arrival` ADD FOREIGN KEY (`mrt_station_id`) REFERENCES
 
 ALTER TABLE `parking_station` ADD FOREIGN KEY (`ps_id`) REFERENCES `parking_realtime` (`ps_id`);
 
-ALTER TABLE `city` ADD FOREIGN KEY (`city_code`) REFERENCES `parking_station` (`city_code`);
+ALTER TABLE `parking_station` ADD FOREIGN KEY (`city_code`) REFERENCES `city` (`city_code`);
 
-ALTER TABLE `city` ADD FOREIGN KEY (`city_code`) REFERENCES `bus_route` (`city_code`);
+ALTER TABLE `bus_route` ADD FOREIGN KEY (`city_code`) REFERENCES `city` (`city_code`);
 
-ALTER TABLE `city` ADD FOREIGN KEY (`city_code`) REFERENCES `mrt_station` (`city_code`);
+ALTER TABLE `mrt_station` ADD FOREIGN KEY (`city_code`) REFERENCES `city` (`city_code`);
 
-ALTER TABLE `city` ADD FOREIGN KEY (`city_code`) REFERENCES `bus_station` (`city_code`);
+ALTER TABLE `bus_station` ADD FOREIGN KEY (`city_code`) REFERENCES `city` (`city_code`);
 
-ALTER TABLE `city` ADD FOREIGN KEY (`city_code`) REFERENCES `bike_station` (`city_code`);
+ALTER TABLE `bike_station` ADD FOREIGN KEY (`city_code`) REFERENCES `city` (`city_code`);
+
