@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import os
 from datetime import datetime
 import re
+from sqlalchemy import create_engine
 # 使用getenv拿取帳號密碼
 load_dotenv()
 username = os.getenv("ANDY_USERNAME")
@@ -75,11 +76,29 @@ def T_mrt_parking(df):
     }, inplace=True)
 
     filename = datetime.strftime(datetime.now(), "%Y-%m-%d_%H-%M-%S")
-    df.to_csv(f"./{filename}mrt_parking.csv",
-              encoding="utf-8-sig", index=False)
+    # df.to_csv(f"./{filename}mrt_parking.csv",
+    #           encoding="utf-8-sig", index=False)
+    # return ("OK")
+    return (df)  # 可以輸出df做load之用  測試階段先直接輸出csv到local端
+
+
+def L_mrt_parking_to_sql(df):
+    username_sql = os.getenv("ANDY_USERNAME_SQL")
+    password_sql = os.getenv("ANDY_PASSWORD_SQL")
+    # server = "host.docker.internal:3306"  #docker用
+    server = "localhost:3306"
+    db_name = "group2_db"
+    with create_engine(f"mysql+pymysql://{username_sql}:{password_sql}@{server}/{db_name}",).connect() as conn:
+        df.to_sql(
+            name="mrt_parking",
+            con=conn,
+            if_exists="append",
+            index=False
+        )
+    print("OK")
     return ("OK")
-    # return(df)  #可以輸出df做load之用  測試階段先直接輸出csv到local端
 
 
-data = E_mrt_parking()
-T_mrt_parking(df=data)
+E_df = E_mrt_parking()
+T_df = T_mrt_parking(df=E_df)
+L_mrt_parking_to_sql(df=T_df)

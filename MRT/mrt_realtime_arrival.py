@@ -6,7 +6,7 @@ import os
 from datetime import datetime
 import re
 import numpy as np
-
+from sqlalchemy import create_engine
 load_dotenv()
 username = os.getenv("ANDY_USERNAME")
 password = os.getenv("ANDY_PASSWORD")
@@ -60,11 +60,29 @@ def T_mrt_realtime_arrival(df):
     df["mrt_station_name"] = df["mrt_station_name"].str.rstrip("站")
     df["mrt_destination_name"] = df["mrt_destination_name"].str.rstrip("站")
     filename = datetime.strftime(datetime.now(), "%Y-%m-%d_%H-%M-%S")
-    df.to_csv(f"./{filename}mrt_realtime_arrival.csv",
-              encoding="utf-8-sig", index=False)
+    # df.to_csv(f"./{filename}mrt_realtime_arrival.csv",
+    #           encoding="utf-8-sig", index=False)
+    # return ("OK")
+    return (df)
+
+
+def L_mrt_realtime_arrival(df):
+    username_sql = os.getenv("ANDY_USERNAME_SQL")
+    password_sql = os.getenv("ANDY_PASSWORD_SQL")
+    # server = "host.docker.internal:3306"  #docker用
+    server = "localhost:3306"
+    db_name = "group2_db"
+    with create_engine(f"mysql+pymysql://{username_sql}:{password_sql}@{server}/{db_name}",).connect() as conn:
+        df.to_sql(
+            name="mrt_parkingmrt_realtime_arrival",
+            con=conn,
+            if_exists="append",
+            index=False
+        )
+    print("OK")
     return ("OK")
-    # return(df)
 
 
-data = E_mrt_realtime_arrival()
-T_mrt_realtime_arrival(df=data)
+E_df = E_mrt_realtime_arrival()
+T_df = T_mrt_realtime_arrival(df=E_df)
+L_mrt_realtime_arrival(df=T_df)

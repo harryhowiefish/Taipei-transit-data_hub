@@ -186,14 +186,14 @@ CREATE TABLE `mrt_realtime_crowded` (
   `cart5` int,
   `cart6` int,
   `update_time` timestamp,
-  PRIMARY KEY (`mrt_station_id`, `mrt_station_name`, `direction`)
+  PRIMARY KEY (`mrt_station_id`, `direction` ,`update_time`)
 );
 
 CREATE TABLE `mrt_parking` (
   `park_name` varchar(20),
   `mrt_station_id` varchar(5),
   `mrt_station_name` varchar(10),
-  'line_type' varchar(5),
+  `line_type` varchar(5),
   `parking_type`char(2),
   `available_space` int,
   `total_space` int,
