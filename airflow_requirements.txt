@@ -1,13 +1,8 @@
 pymongo==4.6.3
 requests==2.31.0
-pre-commit==3.7.0
+# apache-airflow-providers-mongo==4.0.0
 # pandas==2.2.2
 pandas==2.1.4
 SQLAlchemy==1.4.51 # python3.12 latest supports 2.0.29, but airflow only supports up
-jupyter==1.0.0
 PyMySQL==1.1.0
-<<<<<<< HEAD
-python-dotenv
-=======
 bs4==0.0.2
->>>>>>> develop

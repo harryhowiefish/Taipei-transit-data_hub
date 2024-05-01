@@ -88,6 +88,14 @@ mongodb://root:password@localhost:27000
 - 把檔案名稱放進gitignore（或是小心不要stage進commit）
 - 將檔案放GCS（暫定，相關細節待補）
 
+## GCS naming policy
+- Bucket name: tir101-group2
+- Blob name: 
+    - ubike/<file_name>
+    - mrt/<file_name>
+    - parking/<file_name>
+    - bus/<file_name>
+
 ## PR (pull request)
 
 - 目的
