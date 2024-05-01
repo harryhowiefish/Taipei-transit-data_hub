@@ -14,7 +14,8 @@ USER root
 RUN apt-get update -qq
 
 COPY requirements.txt .
-USER $AIRFLOW_UID
+# USER $AIRFLOW_UID
+RUN python -m pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
 WORKDIR $AIRFLOW_HOME
