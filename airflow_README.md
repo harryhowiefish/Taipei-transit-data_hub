@@ -12,6 +12,7 @@ docker-compose up -d
 ``` docker exec -it tir101_group2-airflow-webserver-1 bash ```
 檢查一下資料夾權限 ```ls -l```
 如果有資料夾沒有寫入權限 就要把它改掉 ```chmod 777 <資料夾名稱>```
+然後再跑一次 ```airflow webserver```
 
 
 
