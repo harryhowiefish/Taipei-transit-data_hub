@@ -12,10 +12,13 @@ ENV AIRFLOW_HOME=/opt/airflow
 
 USER root
 RUN apt-get update -qq
+COPY airflow_requirements.txt .
 
-COPY requirements.txt .
-USER $AIRFLOW_UID
-RUN pip install --no-cache-dir -r requirements.txt
+USER ${AIRFLOW_UID:-50000}:0
+RUN python -m pip install --upgrade pip
+RUN pip install --no-cache-dir -r airflow_requirements.txt
+
+USER root
 
 WORKDIR $AIRFLOW_HOME
 
