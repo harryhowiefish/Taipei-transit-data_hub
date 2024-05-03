@@ -31,10 +31,11 @@ def E_mrt_crowded_others():
 
     response = requests.post(url=url, headers=headers, data=xmldata)
     df = pd.DataFrame(json.loads(response.text.split("<?xml")[0]))
+    print("E_mrt_crowded_others finished")
     return (df)
 
 
-def T_mrt_crowded_others(df):
+def T_mrt_crowded_others(df: pd.DataFrame):
 
     pattern = re.compile(r"^[A-Z]+")
 
@@ -67,10 +68,11 @@ def T_mrt_crowded_others(df):
     # df.to_csv(f"./{filename}mrt_realtime_crowded_others.csv",
     #           encoding="utf-8-sig", index=False)
     # return ("OK")
+    print("T_mrt_crowded_others finished")
     return (df)
 
 
-def L_mrt_crowded_others(df):
+def L_mrt_crowded_others(df: pd.DataFrame):
     username_sql = os.getenv("ANDY_USERNAME_SQL")
     password_sql = os.getenv("ANDY_PASSWORD_SQL")
     # server = "host.docker.internal:3306"  #docker用
@@ -83,11 +85,11 @@ def L_mrt_crowded_others(df):
             if_exists="append",
             index=False
         )
-    print("OK")
-    return ("OK")
+    print("L_mrt_crowded_others finished")
+    return ("L_mrt_crowded_others finished")
 
 
-def L_mrt_crowded_others(df):
+def L_mrt_crowded_others(df: pd.DataFrame):
     username_sql = os.getenv("ANDY_USERNAME_SQL")
     password_sql = os.getenv("ANDY_PASSWORD_SQL")
     # server = "host.docker.internal:3306"  #docker用
@@ -112,8 +114,8 @@ def L_mrt_crowded_others(df):
                 print("Error!!!!")
                 print(e)
                 continue
-    print("L finished")
-    return ("L finished")
+    print("L_mrt_crowded_others finished")
+    return ("L_mrt_crowded_others finished")
 
 
 E_df = E_mrt_crowded_others()

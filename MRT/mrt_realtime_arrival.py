@@ -32,10 +32,11 @@ def E_mrt_realtime_arrival():
 
     response = requests.post(url=url, headers=headers, data=xmldata)
     df = pd.DataFrame(json.loads(response.text.split("<?xml")[0]))
+    print("E_mrt_realtime_arrival finished")
     return (df)
 
 
-def T_mrt_realtime_arrival(df):
+def T_mrt_realtime_arrival(df: pd.DataFrame):
     def arrive_time_transform(x):
         if x == "列車進站":
             return (0)
@@ -63,10 +64,11 @@ def T_mrt_realtime_arrival(df):
     # df.to_csv(f"./{filename}mrt_realtime_arrival.csv",
     #           encoding="utf-8-sig", index=False)
     # return ("OK")
+    print("T_mrt_realtime_arrival finished")
     return (df)
 
 
-def L_mrt_realtime_arrival(df):
+def L_mrt_realtime_arrival(df: pd.DataFrame):
     username_sql = os.getenv("ANDY_USERNAME_SQL")
     password_sql = os.getenv("ANDY_PASSWORD_SQL")
     # server = "host.docker.internal:3306"  #docker用
@@ -74,13 +76,13 @@ def L_mrt_realtime_arrival(df):
     db_name = "group2_db"
     with create_engine(f"mysql+pymysql://{username_sql}:{password_sql}@{server}/{db_name}",).connect() as conn:
         df.to_sql(
-            name="mrt_parkingmrt_realtime_arrival",
+            name="mrt_realtime_arrival",
             con=conn,
             if_exists="append",
             index=False
         )
-    print("OK")
-    return ("OK")
+    print("L_mrt_realtime_arrival finished")
+    return ("L_mrt_realtime_arrival finished")
 
 
 E_df = E_mrt_realtime_arrival()

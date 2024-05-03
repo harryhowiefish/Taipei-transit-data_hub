@@ -32,10 +32,11 @@ def E_mrt_crowded_BR():
     response = requests.post(url=url, headers=headers, data=xmldata)
     df = pd.DataFrame(json.loads(response.text.split("<getCarWeightBRInfoResult>")[
                       1].split("</getCarWeightBRInfoResult")[0]))
+    print("E_mrt_crowded_BR finished")
     return (df)
 
 
-def T_mrt_crowded_BR(df):
+def T_mrt_crowded_BR(df: pd.DataFrame):
     pattern = re.compile(r"[A-Za-z]+\s*")
     df["StationName"] = df["StationName"].str.replace(pattern, "", regex=True)
     pattern = re.compile(r"^[A-Z]+")
@@ -68,10 +69,11 @@ def T_mrt_crowded_BR(df):
     # df.to_csv(f"./{filename}mrt_realtime_crowded_BR.csv",
     #           encoding="utf-8-sig", index=False)
     # return ("OK")
+    print("T_mrt_crowded_BR finished")
     return (df)
 
 
-def L_mrt_crowded_BR(df):
+def L_mrt_crowded_BR(df: pd.DataFrame):
     username_sql = os.getenv("ANDY_USERNAME_SQL")
     password_sql = os.getenv("ANDY_PASSWORD_SQL")
     # server = "host.docker.internal:3306"  #docker用
@@ -88,7 +90,7 @@ def L_mrt_crowded_BR(df):
     return ("OK")
 
 
-def L_mrt_crowded_BR(df):
+def L_mrt_crowded_BR(df: pd.DataFrame):
     username_sql = os.getenv("ANDY_USERNAME_SQL")
     password_sql = os.getenv("ANDY_PASSWORD_SQL")
     # server = "host.docker.internal:3306"  #docker用
@@ -114,8 +116,8 @@ def L_mrt_crowded_BR(df):
                 print(e)
                 continue
 
-    print("L finished")
-    return ("L finished")
+    print("L_mrt_crowded_BR finished")
+    return ("L_mrt_crowded_BR finished")
 
 
 E_df = E_mrt_crowded_BR()
