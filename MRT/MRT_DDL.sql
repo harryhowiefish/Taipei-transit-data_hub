@@ -34,4 +34,12 @@ CREATE TABLE `mrt_parking` (
 
 );
 
-
+CREATE TABLE `mrt_usage_history` (
+  `date` date ,
+  `hour` int,
+  `mrt_station_name` varchar(10),
+  `enter_count` int,
+  `exit_count` int
+  PRIMARY(`mrt_station_name`,`date`,`hour`)
+);
+			
