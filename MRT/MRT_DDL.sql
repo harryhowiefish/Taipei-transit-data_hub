@@ -41,7 +41,7 @@ CREATE TABLE `mrt_parking_info` (
   `parking_type`char(2),
   `total_space` int,
   `update_time` timestamp,
-  PRIMARY KEY(`park_name`)
+  PRIMARY KEY(`park_name`,`update_time`)
 
 );
 
@@ -75,4 +75,3 @@ CREATE TABLE `mrt_station` (
   `bike_allow_on_holiday` bool,
   `update_time` timestamp
 );
-
