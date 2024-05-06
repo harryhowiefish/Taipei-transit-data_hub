@@ -167,23 +167,47 @@ CREATE TABLE `mrt_usage_history` (
 );
 
 CREATE TABLE `mrt_realtime_arrival` (
+<<<<<<< HEAD
+  `mrt_station_name` varchar(10),
+  `destination_name` varchar(10),
+  `arrive_time` int,
+  `update_time` timestamp,
+  PRIMARY KEY (`mrt_station_name`, `destination_name`, `update_time`)
+=======
   `mrt_station_id` int,
   `destination_id` varchar(10),
   `countdown` time,
   `source_time` timestamp,
   `create_time` timestamp,
   PRIMARY KEY (`mrt_station_id`, `destination_id`, `create_time`)
+>>>>>>> develop
 );
 
 CREATE TABLE `mrt_realtime_crowded` (
-  `mrt_station_id` int,
-  `direction` int,
+  `mrt_station_id` varchar(5),
+  `mrt_station_name` varchar(10),
+  `line_type` varchar(5),
+  `direction` varchar(2),
   `cart1` int,
   `cart2` int,
   `cart3` int,
   `cart4` int,
   `cart5` int,
   `cart6` int,
+<<<<<<< HEAD
+  `update_time` timestamp,
+  PRIMARY KEY (`mrt_station_id`, `direction` ,`update_time`)
+);
+
+CREATE TABLE `mrt_parking` (
+  `park_name` varchar(20),
+  `mrt_station_id` varchar(5),
+  `mrt_station_name` varchar(10),
+  `line_type` varchar(5),
+  `parking_type`char(2),
+  `available_space` int,
+  `total_space` int,
+=======
   `source_time` timestamp,
   `create_time` timestamp,
   PRIMARY KEY (`mrt_station_id`, `direction`, `create_time`)
@@ -196,7 +220,9 @@ CREATE TABLE `mrt_parking` (
   `mrt_station_id` int,
   `park_total_no` int,
   `create_time` timestamp,
+>>>>>>> develop
   `update_time` timestamp
+
 );
 
 CREATE TABLE `mrt_realtime_parking` (
@@ -225,6 +251,7 @@ CREATE TABLE `parking_realtime` (
   `source_time` timestamp,
   `create_time` timestamp
 );
+
 
 CREATE TABLE `city` (
   `city_code` char(3) PRIMARY KEY,
