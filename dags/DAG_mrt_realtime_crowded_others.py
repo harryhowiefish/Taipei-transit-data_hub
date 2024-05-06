@@ -103,7 +103,7 @@ def DAG_mrt_crowded_others():
         username_sql = os.getenv("ANDY_USERNAME_SQL")
         password_sql = os.getenv("ANDY_PASSWORD_SQL")
         server = "host.docker.internal:3306"  # docker用
-        # server = "localhost:3306"
+        erver = "localhost:3306"
         db_name = "group2_db"
         with create_engine(f"mysql+pymysql://{username_sql}:{password_sql}@{server}/{db_name}",).connect() as conn:
             df.reset_index(drop=True, inplace=True)
