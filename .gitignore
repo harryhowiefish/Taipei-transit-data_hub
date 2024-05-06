@@ -153,3 +153,5 @@ cython_debug/
 logs/*
 gcp_creds/gcp_credentials.json
 *.csv
+*.json
+harry_person_ipynb
