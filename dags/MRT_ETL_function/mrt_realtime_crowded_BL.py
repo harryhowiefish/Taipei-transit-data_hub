@@ -8,11 +8,11 @@ import re
 import numpy as np
 from sqlalchemy import create_engine, exc
 load_dotenv()
-username = os.getenv("ANDY_USERNAME")
-password = os.getenv("ANDY_PASSWORD")
 
 
 def E_mrt_crowded_BL():
+    username = os.getenv("ANDY_USERNAME")
+    password = os.getenv("ANDY_PASSWORD")
     url = "https://api.metro.taipei/metroapi/CarWeight.asmx"  # 板南線車廂擁擠度
     headers = {
         "Content-type": "text/xml; charset=utf-8"
@@ -72,28 +72,30 @@ def T_mrt_crowded_BL(df: pd.DataFrame):
     return (df)
 
 
-def L_mrt_crowded_BL(df: pd.DataFrame):
-    username_sql = os.getenv("ANDY_USERNAME_SQL")
-    password_sql = os.getenv("ANDY_PASSWORD_SQL")
-    # server = "host.docker.internal:3306"  #docker用
-    server = "localhost:3306"
-    db_name = "group2_db"
-    with create_engine(f"mysql+pymysql://{username_sql}:{password_sql}@{server}/{db_name}",).connect() as conn:
-        df.to_sql(
-            name="mrt_realtime_crowded",
-            con=conn,
-            if_exists="append",
-            index=False
-        )
-    print("L_mrt_crowded_BL finished")
-    return ("OK")
+# def L_mrt_crowded_BL(df: pd.DataFrame):
+#     username_sql = os.getenv("ANDY_USERNAME_SQL")
+#     password_sql = os.getenv("ANDY_PASSWORD_SQL")
+#     # server = "host.docker.internal:3306"  #docker用
+#     server = "localhost:3306"
+#     db_name = "group2_db"
+#     with create_engine(f"mysql+pymysql://{username_sql}:{password_sql}@{server}/{db_name}",).connect() as conn:
+#         df.to_sql(
+#             name="mrt_realtime_crowded",
+#             con=conn,
+#             if_exists="append",
+#             index=False
+#         )
+#     print("L_mrt_crowded_BL finished")
+#     return ("OK")
 
 
-def L_mrt_crowded_BL(df: pd.DataFrame):
+def L_mrt_crowded_BL(df: pd.DataFrame, port: str = "docker"):
     username_sql = os.getenv("ANDY_USERNAME_SQL")
     password_sql = os.getenv("ANDY_PASSWORD_SQL")
-    # server = "host.docker.internal:3306"  #docker用
-    server = "localhost:3306"
+    if port == "docker":
+        server = "host.docker.internal:3306"  # docker用
+    else:
+        server = f"localhost:{port}"
     db_name = "group2_db"
     with create_engine(f"mysql+pymysql://{username_sql}:{password_sql}@{server}/{db_name}",).connect() as conn:
         df.reset_index(drop=True, inplace=True)
@@ -118,6 +120,7 @@ def L_mrt_crowded_BL(df: pd.DataFrame):
     return ("L_mrt_crowded_BL finished")
 
 
-E_df = E_mrt_crowded_BL()
-T_df = T_mrt_crowded_BL(df=E_df)
-L_mrt_crowded_BL(df=T_df)
+if __name__ == "__main__":
+    E_df = E_mrt_crowded_BL()
+    T_df = T_mrt_crowded_BL(df=E_df)
+    L_mrt_crowded_BL(df=T_df)
