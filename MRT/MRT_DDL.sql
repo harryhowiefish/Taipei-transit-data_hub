@@ -2,10 +2,10 @@ create database `group2_db`;
 use `group2_db`;
 CREATE TABLE `mrt_realtime_arrival` (
   `mrt_station_name` varchar(10),
-  `destination_name` varchar(10),
+  `mrt_destination_name` varchar(10),
   `arrive_time` int,
   `update_time` timestamp,
-  PRIMARY KEY(`mrt_station_name`,`destination_name`,`update_time`)
+  PRIMARY KEY(`mrt_station_name`,`mrt_destination_name`,`update_time`)
 );
 
 CREATE TABLE `mrt_realtime_crowded` (
