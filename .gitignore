@@ -154,5 +154,5 @@ logs/*
 gcp_creds/gcp_credentials.json
 *.csv
 *.json
-harry_person_ipynb
+harry_personal_ipynb/
 laura_personal_noted/
