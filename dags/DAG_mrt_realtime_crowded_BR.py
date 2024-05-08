@@ -10,6 +10,7 @@ import numpy as np
 from airflow.decorators import dag, task
 from zoneinfo import ZoneInfo
 from MRT_ETL_function.mrt_realtime_crowded_BR import E_mrt_crowded_BR, T_mrt_crowded_BR, L_mrt_crowded_BR
+from MRT_ETL_function.upload_to_gcs_function import upload_to_bucket_string, L_df_to_gcs
 # 使用getenv拿取帳號密碼
 load_dotenv()
 
@@ -47,9 +48,14 @@ def DAG_mrt_crowded_BR():
     def DAG_L_task(df, port):
         return (L_mrt_crowded_BR(df, port))
 
+    @task
+    def DAG_L_df_to_gcs_task(df, bucket_name):
+        L_df_to_gcs(df=df, bucket_name=bucket_name)
+
     E_df = DAG_E_task()
     T_df = DAG_T_task(df=E_df)
     DAG_L_task(df=T_df, port="docker")
+    DAG_L_df_to_gcs_task(df=T_df, bucket_name="mrt_realtime_crowded")
 
 
 DAG_mrt_crowded_BR()

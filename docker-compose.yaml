@@ -1,18 +1,15 @@
 ---
-x-airflow-common:
-  &airflow-common
+x-airflow-common: &airflow-common
   env_file:
-  - .env  # 將環境變數加入
-  
-  # In order to add custom dependencies or upgrade provider packages you can use your extended image.
-  # Comment the image line, place your Dockerfile in the directory where you placed the docker-compose.yaml
-  # and uncomment the "build" line below, Then run `docker-compose build` to build the images.
-  # image: ${AIRFLOW_IMAGE_NAME:-custom_airflow:lastest}
+    - .env # 將環境變數加入
+    # In order to add custom dependencies or upgrade provider packages you can use your extended image.
+    # Comment the image line, place your Dockerfile in the directory where you placed the docker-compose.yaml
+    # and uncomment the "build" line below, Then run `docker-compose build` to build the images.
+    # image: ${AIRFLOW_IMAGE_NAME:-custom_airflow:lastest}
   build:
     context: .
     dockerfile: ${AIRFLOW_PROJ_DIR:-.}/airflow.Dockerfile
-  environment:
-    &airflow-common-env
+  environment: &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
     # AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
@@ -35,11 +32,12 @@ x-airflow-common:
     - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
     - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
+    - ${AIRFLOW_PROJ_DIR:-.}/secrets:/opt/airflow/secrets
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
-    &airflow-common-depends-on
     # redis:
     #   condition: service_healthy
+    &airflow-common-depends-on
     postgres:
       condition: service_healthy
     mongo:
@@ -59,7 +57,7 @@ services:
     # command: 
     #   mongod --config /etc/mongo/mongo.conf # Uncomment if using a custom config
     restart: always
-  
+
   postgres:
     image: postgres:13
     environment:
@@ -69,12 +67,11 @@ services:
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "airflow"]
+      test: [ "CMD", "pg_isready", "-U", "airflow" ]
       interval: 10s
       retries: 5
       start_period: 5s
     restart: always
-
 
   airflow-webserver:
     <<: *airflow-common
@@ -82,7 +79,13 @@ services:
     ports:
       - "8080:8080"
     healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      test:
+        [
+          "CMD",
+          "curl",
+          "--fail",
+          "http://localhost:8080/health"
+        ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -97,7 +100,13 @@ services:
     <<: *airflow-common
     command: scheduler
     healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:8974/health"]
+      test:
+        [
+          "CMD",
+          "curl",
+          "--fail",
+          "http://localhost:8974/health"
+        ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -108,12 +117,15 @@ services:
       airflow-init:
         condition: service_completed_successfully
 
-
   airflow-triggerer:
     <<: *airflow-common
     command: triggerer
     healthcheck:
-      test: ["CMD-SHELL", 'airflow jobs check --job-type TriggererJob --hostname "$${HOSTNAME}"']
+      test:
+        [
+          "CMD-SHELL",
+          'airflow jobs check --job-type TriggererJob --hostname "$${HOSTNAME}"'
+        ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -201,8 +213,8 @@ services:
       - -c
       - airflow
 
-
 volumes:
   postgres-db-volume:
   mongodb-db-volume:
-  
+
+

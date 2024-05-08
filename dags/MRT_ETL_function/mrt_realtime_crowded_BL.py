@@ -7,6 +7,9 @@ from datetime import datetime
 import re
 import numpy as np
 from sqlalchemy import create_engine, exc
+from zoneinfo import ZoneInfo
+from google.cloud import storage
+from MRT_ETL_function.upload_to_gcs_function import upload_to_bucket_string
 load_dotenv()
 
 
@@ -118,6 +121,14 @@ def L_mrt_crowded_BL(df: pd.DataFrame, port: str = "docker"):
                 continue
     print("L_mrt_crowded_BL finished")
     return ("L_mrt_crowded_BL finished")
+
+# def L_to_gcs_mrt_crowded_BL(df: pd.DataFrame, bucket_name: str):
+#     now = datetime.strftime(datetime.now(
+#         ZoneInfo('Asia/Taipei')), "%Y%m%d_%H%M")
+#     blob_name = f"{bucket_name}{now}.csv"
+#     upload_to_bucket_string(df=df, blob_name=blob_name,
+#                             bucket_name=bucket_name)
+
 
 
 if __name__ == "__main__":

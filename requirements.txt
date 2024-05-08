@@ -7,3 +7,4 @@ SQLAlchemy==1.4.51 # python3.12 latest supports 2.0.29, but airflow only support
 jupyter==1.0.0
 PyMySQL==1.1.0
 python-dotenv
+google-cloud-storage==2.16.0

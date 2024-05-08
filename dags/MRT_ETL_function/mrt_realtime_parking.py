@@ -7,6 +7,8 @@ from datetime import datetime
 import re
 from sqlalchemy import create_engine
 from zoneinfo import ZoneInfo
+from google.cloud import storage
+from MRT_ETL_function.upload_to_gcs_function import upload_to_bucket_string
 # 使用getenv拿取帳號密碼
 load_dotenv()
 
@@ -75,7 +77,16 @@ def L_mrt_realtime_parking(df: pd.DataFrame, port: str = "docker"):
     return ("L_mrt_realtime_parking finished")
 
 
+def L_to_gcs_mrt_realtime_parking(df: pd.DataFrame, bucket_name: str):
+    now = datetime.strftime(datetime.now(
+        ZoneInfo('Asia/Taipei')), "%Y%m%d_%H%M")
+    blob_name = f"{bucket_name}{now}.csv"
+    upload_to_bucket_string(df=df, blob_name=blob_name,
+                            bucket_name=bucket_name)
+
+
 if __name__ == "__main__":
     E_df = E_mrt_realtime_parking()
     T_df = T_mrt_realtime_parking(df=E_df)
-    L_mrt_realtime_parking(df=T_df, port="3306")
+    # L_mrt_realtime_parking(df=T_df, port="3306")
+    L_to_gcs_mrt_realtime_parking(df=T_df, bucket_name="mrt_realtime_parking")
