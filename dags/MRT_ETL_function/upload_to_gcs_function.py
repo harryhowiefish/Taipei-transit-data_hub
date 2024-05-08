@@ -18,9 +18,9 @@ def upload_to_bucket_string(df: pd.DataFrame, blob_name: str, bucket_name: str):
     return blob
 
 
-def L_df_to_gcs(df: pd.DataFrame, bucket_name: str):
+def L_df_to_gcs(df: pd.DataFrame, bucket_name: str, blob_name_tag: str = ""):
     now = datetime.strftime(datetime.now(
         ZoneInfo('Asia/Taipei')), "%Y%m%d_%H%M")
-    blob_name = f"{bucket_name}{now}.csv"
+    blob_name = f"{bucket_name}{blob_name_tag}{now}.csv"
     upload_to_bucket_string(df=df, blob_name=blob_name,
                             bucket_name=bucket_name)

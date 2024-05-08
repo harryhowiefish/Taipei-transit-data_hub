@@ -48,10 +48,6 @@ def DAG_mrt_realtime_parking():
         return (L_mrt_realtime_parking(df, port))
 
     @task
-    def DAG_L_to_gcs_task(df, bucket_name):
-        L_to_gcs_mrt_realtime_parking(df=df, bucket_name=bucket_name)
-
-    @task
     def DAG_L_df_to_gcs_task(df, bucket_name):
         L_df_to_gcs(df=df, bucket_name=bucket_name)
 
