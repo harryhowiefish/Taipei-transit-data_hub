@@ -9,8 +9,6 @@ from sqlalchemy import create_engine, exc
 from zoneinfo import ZoneInfo
 import pymysql
 from pymysql.err import IntegrityError, InternalError
-from google.cloud import storage
-from MRT_ETL_function.upload_to_gcs_function import upload_to_bucket_string
 
 load_dotenv()
 
@@ -97,6 +95,7 @@ def T_mrt_station(df: pd.DataFrame):
     }, inplace=True)
     return (df)
 
+
 def L_mrt_station(df: pd.DataFrame):
     username_sql = os.getenv("ANDY_USERNAME_SQL")
     password_sql = os.getenv("ANDY_PASSWORD_SQL")
@@ -104,15 +103,16 @@ def L_mrt_station(df: pd.DataFrame):
     server = "localhost:3306"
     db_name = "group2_db"
     with create_engine(f"mysql+pymysql://{username_sql}:{password_sql}@{server}/{db_name}",).connect() as conn:
-            df.to_sql(
-                name="mrt_station",
-                con=conn,
-                if_exists="replace",
-                index=False
-            )
+        df.to_sql(
+            name="mrt_station",
+            con=conn,
+            if_exists="replace",
+            index=False
+        )
 
     print("L_mrt_station finished")
     return ("L_mrt_station finished")
+
 
 E_df = E_mrt_station()
 T_df = T_mrt_station(df=E_df)

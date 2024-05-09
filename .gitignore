@@ -154,3 +154,4 @@ logs/*
 gcp_creds/gcp_credentials.json
 *.csv
 andy-gcs_key.json
+secrets
