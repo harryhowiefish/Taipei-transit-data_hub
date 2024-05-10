@@ -14,6 +14,8 @@ from MRT_ETL_function.upload_to_gcs_function import upload_to_bucket_string
 # mrt_usage_history
 # get csv download of every month's data
 # each url can get one month's data
+
+
 def E_mrt_usage_history_csvfilelist():
     url = "https://data.taipei/api/dataset/63f31c7e-7fc3-418b-bd82-b95158755b4d/resource/eb481f58-1238-4cff-8caa-fa7bb20cb4f4/download"
     response = requests.get(url=url)
@@ -74,6 +76,22 @@ def T_mrt_usage_history_one_month(url):
         "人次": "visitors_num"
     }, inplace=True)
     print("T_mrt_usage_history_one_month finished")
+    return (df)
+
+
+def T_mrt_usage_history_one_month_recuce(df: pd.DataFrame):
+    df_enter = pd.DataFrame(df.groupby(["date", "hour", "mrt_station_name_enter"])[
+                            "visitors_num"].sum()).reset_index(drop=False)
+    df_out = pd.DataFrame(df.groupby(["date", "hour", "mrt_station_name_exit"])[
+        "visitors_num"].sum()).reset_index(drop=False)
+    df = df_enter.merge(df_out,
+                        left_on=["date", "hour", "mrt_station_name_enter"],
+                        right_on=["date", "hour", "mrt_station_name_exit"],
+                        how="outer", suffixes=["_enter", "_exit"])
+    df["mrt_station_name"] = df["mrt_station_name_exit"].combine_first(
+        df["mrt_station_name_enter"])
+    df = df.loc[:, ["date", "hour", "mrt_station_name",
+                    "visitors_num_enter", "visitors_num_exit"]]
     return (df)
 
 
