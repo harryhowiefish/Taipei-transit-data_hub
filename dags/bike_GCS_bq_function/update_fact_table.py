@@ -4,8 +4,9 @@ from google.cloud import bigquery
 from google.oauth2.service_account import Credentials
 import db_dtypes
 
-BIGQUERY_CREDENTIALS_FILE_PATH = r"D:\data_engineer\TIR_group2\TIR101_Group2\secrets\harry_GCS_BigQuery_write_cred.json"
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = BIGQUERY_CREDENTIALS_FILE_PATH
+
+# BIGQUERY_CREDENTIALS_FILE_PATH = r"D:\data_engineer\TIR_group2\TIR101_Group2\secrets\harry_GCS_BigQuery_write_cred.json"
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/opt/airflow/secrets/harry_GCS_BigQuery_write_cred.json'
 BQ_CLIENT = bigquery.Client()
 
 

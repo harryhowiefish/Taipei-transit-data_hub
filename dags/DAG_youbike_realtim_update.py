@@ -9,13 +9,14 @@ from sqlalchemy import create_engine, exc
 from airflow.decorators import dag, task
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
+from airflow import DAG
 from zoneinfo import ZoneInfo
 from google.cloud import bigquery
 from google.oauth2.service_account import Credentials
 import db_dtypes
 from bike_GCS_bq_function.update_fact_table import update_data_insert_merge_into_ods, update_data_insert_merge_into_fact_bike_realtime
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/opt/airflow/secrets/andy-gcs_key.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/opt/airflow/secrets/harry_GCS_BigQuery_write_cred.json'
 BQ_CLIENT_DOCKER = bigquery.Client()
 
 
@@ -46,12 +47,12 @@ default_args = {
 dag = DAG(
     "DAG_youbike_realtim_update",
     default_args=default_args,
-    description="insert new data into bike realtime ods and fact table"
+    description="insert new data into bike realtime ods and fact table",
     schedule="0 * * * *",
     start_date=datetime(2024, 1, 1),
     # If False, the scheduler won’t go back in time to run missed runs.
     catchup=False,
-    tag=["bikerealtime", "update", "dim", "fact"]
+    tags=["bikerealtime", "update", "dim", "fact"]
 )
 
 task1_update_ods = PythonOperator(
