@@ -4,7 +4,7 @@ from io import BytesIO
 import pandas as pd
 from google.cloud import storage
 # from google.cloud.exceptions import NotFound
-
+import logging
 # WORKAROUND to prevent timeout for files > 6 MB on 800 kbps upload speed.
 # (Ref: https://github.com/googleapis/python-storage/issues/74)
 storage.blob._MAX_MULTIPART_SIZE = 1024 * 1024  # 1 MB
@@ -98,3 +98,38 @@ def download_df_from_gcs(
 
     bytes_data = blob.download_as_bytes()
     return pd.read_parquet(BytesIO(bytes_data))
+
+
+def list_bucket(client: storage.Client, bucket_name: str,
+                folder_name: str = None, verbose: bool = False) -> list:
+
+    bucket = client.bucket(bucket_name)
+    if folder_name:
+        file_list = [file.name for file in bucket.list_blobs()
+                     if folder_name in file.name]
+    else:
+        file_list = [file.name for file in bucket.list_blobs()]
+    if verbose:
+        print(file_list)
+        return
+    return file_list
+
+
+def rename_blob(client: storage.Client, bucket_name: str,
+                blob_name: str, new_blob_name: str):
+    '''this will require GCS admin privilege'''
+    bucket = client.bucket(bucket_name)
+    source_blob = bucket.blob(blob_name)
+    destination_bucket = bucket
+
+    blob_copy = bucket.copy_blob(
+        source_blob, destination_bucket, new_blob_name
+    )
+    bucket.delete_blob(blob_name)
+
+    logging.info(
+        "Blob {} renamed as {}".format(
+            source_blob.name,
+            blob_copy.name,
+        )
+    )
