@@ -55,3 +55,8 @@ git merge --abort
 ```
 git reset --hard origin/<分支名稱>
 ```
+
+3. 把另一個分支或commit的檔案移到當下的working directory
+```
+git checkout <commit_hash or <branch_name>> <relative_path_to_file_or_dir>
+```
