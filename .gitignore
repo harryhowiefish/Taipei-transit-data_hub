@@ -151,7 +151,9 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 logs/*
+gcp_credentials/*
 gcp_creds/gcp_credentials.json
 *.csv
 *.json
-harry_person_ipynb
+harry_personal_ipynb/
+laura_personal_noted/
