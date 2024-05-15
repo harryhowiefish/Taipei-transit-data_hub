@@ -4,16 +4,12 @@ from google.cloud import bigquery
 from google.oauth2.service_account import Credentials
 import db_dtypes
 
-BIGQUERY_CREDENTIALS_FILE_PATH = r"D:\data_engineer\TIR_group2\TIR101_Group2\secrets\harry_GCS_BigQuery_write_cred.json"
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = BIGQUERY_CREDENTIALS_FILE_PATH
-BQ_CLIENT = bigquery.Client()
 
-
-def youbike_gcs_src_to_bq_before0504(client: bigquery.Client = BQ_CLIENT) -> None:
+def SRC_youbike_gcs_to_bq_before0504(dataset_name: str, create_table_name: str, client: bigquery.Client) -> None:
     """create external table (GCS to BQ) for you bike data(format for API before 0504) """
     query_job = client.query(
-        """
-        CREATE OR REPLACE EXTERNAL TABLE `Youbike_ODS.youbike_src_before_0504`
+        f"""
+        CREATE OR REPLACE EXTERNAL TABLE `{dataset_name}.{create_table_name}`
         (
             sno INT,
             sna STRING,
@@ -46,14 +42,14 @@ def youbike_gcs_src_to_bq_before0504(client: bigquery.Client = BQ_CLIENT) -> Non
     )
 
     query_job.result()
-    print("youbike_gcs_src_to_bq_before0504 created.")
+    print(f"{dataset_name}.{create_table_name} has been created.")
 
 
-def youbike_gcs_src_to_bq_after0504(client: bigquery.Client = BQ_CLIENT) -> None:
+def SRC_youbike_gcs_to_bq_after0504(dataset_name: str, create_table_name: str, client: bigquery.Client) -> None:
     """create external table (GCS to BQ) for you bike data(format for API after 0504) """
     query_job = client.query(
-        """
-        CREATE OR REPLACE EXTERNAL TABLE `Youbike_ODS.youbike_src_after0504`
+        f"""
+        CREATE OR REPLACE EXTERNAL TABLE `{dataset_name}.{create_table_name}`
         (
             sno INT,
             sna  STRING,
@@ -86,9 +82,16 @@ def youbike_gcs_src_to_bq_after0504(client: bigquery.Client = BQ_CLIENT) -> None
     )
 
     query_job.result()
-    print("youbike_gcs_src_to_bq_after0504 created.")
+    print(f"{dataset_name}.{create_table_name} has been created.")
 
 
 if __name__ == "__main__":
-    youbike_gcs_src_to_bq_before0504()
-    youbike_gcs_src_to_bq_after0504()
+    BIGQUERY_CREDENTIALS_FILE_PATH = r"D:\data_engineer\TIR_group2\TIR101_Group2\secrets\harry_GCS_BigQuery_write_cred.json"
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = BIGQUERY_CREDENTIALS_FILE_PATH
+    BQ_CLIENT = bigquery.Client()
+    SRC_youbike_gcs_to_bq_before0504(
+        dataset_name="Youbike",
+        create_table_name="SRC_youbike_before0504", client=BQ_CLIENT)
+    SRC_youbike_gcs_to_bq_after0504(
+        dataset_name="Youbike",
+        create_table_name="SRC_youbike_after0504", client=BQ_CLIENT)
