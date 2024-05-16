@@ -21,7 +21,8 @@ BQ_CLIENT_DOCKER = bigquery.Client()
 
 
 def update_bike_realtime_ods():
-    update_data_insert_merge_into_ods(dataset_name="Youbike",
+    update_data_insert_merge_into_ods(target_dataset_name="ETL_ODS",
+                                      source_dataset_name="ETL_SRC",
                                       source_table_name="SRC_youbike_after0504",
                                       target_table_name="ODS_youbike_realtime",
                                       client=BQ_CLIENT_DOCKER)
@@ -29,7 +30,8 @@ def update_bike_realtime_ods():
 
 
 def update_bike_realtime_fact():
-    update_data_insert_merge_into_fact_bike_realtime(dataset_name="Youbike",
+    update_data_insert_merge_into_fact_bike_realtime(target_dataset_name="ETL_FACT",
+                                                     source_dataset_name="ETL_ODS",
                                                      source_table_name="ODS_youbike_realtime",
                                                      target_table_name="FACT_bike_realtime",
                                                      client=BQ_CLIENT_DOCKER)
