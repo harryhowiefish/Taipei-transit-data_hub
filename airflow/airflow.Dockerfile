@@ -10,6 +10,7 @@ FROM apache/airflow:2.8.1-python3.10
 
 ENV AIRFLOW_HOME=/opt/airflow
 ENV API_HOST=http://host.docker.internal:3306
+ENV PYTHONPATH='/opt/airflow/'
 USER root
 RUN apt-get update -qq
 COPY airflow_requirements.txt .
