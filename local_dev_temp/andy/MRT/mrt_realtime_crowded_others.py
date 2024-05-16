@@ -3,7 +3,7 @@ import pandas as pd
 import json
 from dotenv import load_dotenv
 import os
-from datetime import datetime
+# from datetime import datetime
 import re
 import numpy as np
 from sqlalchemy import create_engine, exc
@@ -27,7 +27,7 @@ def E_mrt_crowded_others():
     <passWord>{password}</passWord>
     </getCarWeightByInfoEx>
     </soap:Body>
-    </soap:Envelope>"""
+    </soap:Envelope>"""  # noqa
 
     response = requests.post(url=url, headers=headers, data=xmldata)
     df = pd.DataFrame(json.loads(response.text.split("<?xml")[0]))
@@ -64,7 +64,7 @@ def T_mrt_crowded_others(df: pd.DataFrame):
         "utime": "update_time",
     }, inplace=True)
     df = df.loc[df["line_type"].isin(["G", "O", "R"]),].reset_index(drop=True)
-    filename = datetime.strftime(datetime.now(), "%Y-%m-%d_%H-%M-%S")
+    # filename = datetime.strftime(datetime.now(), "%Y-%m-%d_%H-%M-%S")
     # df.to_csv(f"./{filename}mrt_realtime_crowded_others.csv",
     #           encoding="utf-8-sig", index=False)
     # return ("OK")
@@ -72,21 +72,21 @@ def T_mrt_crowded_others(df: pd.DataFrame):
     return (df)
 
 
-def L_mrt_crowded_others(df: pd.DataFrame):
-    username_sql = os.getenv("ANDY_USERNAME_SQL")
-    password_sql = os.getenv("ANDY_PASSWORD_SQL")
-    # server = "host.docker.internal:3306"  #docker用
-    server = "localhost:3306"
-    db_name = "group2_db"
-    with create_engine(f"mysql+pymysql://{username_sql}:{password_sql}@{server}/{db_name}",).connect() as conn:
-        df.to_sql(
-            name="mrt_realtime_crowded",
-            con=conn,
-            if_exists="append",
-            index=False
-        )
-    print("L_mrt_crowded_others finished")
-    return ("L_mrt_crowded_others finished")
+# def L_mrt_crowded_others(df: pd.DataFrame):
+#     username_sql = os.getenv("ANDY_USERNAME_SQL")
+#     password_sql = os.getenv("ANDY_PASSWORD_SQL")
+#     # server = "host.docker.internal:3306"  #docker用
+#     server = "localhost:3306"
+#     db_name = "group2_db"
+#     with create_engine(f"mysql+pymysql://{username_sql}:{password_sql}@{server}/{db_name}",).connect() as conn:  # noqa
+#         df.to_sql(
+#             name="mrt_realtime_crowded",
+#             con=conn,
+#             if_exists="append",
+#             index=False
+#         )
+#     print("L_mrt_crowded_others finished")
+#     return ("L_mrt_crowded_others finished")
 
 
 def L_mrt_crowded_others(df: pd.DataFrame):
@@ -95,10 +95,10 @@ def L_mrt_crowded_others(df: pd.DataFrame):
     # server = "host.docker.internal:3306"  #docker用
     server = "localhost:3306"
     db_name = "group2_db"
-    with create_engine(f"mysql+pymysql://{username_sql}:{password_sql}@{server}/{db_name}",).connect() as conn:
+    with create_engine(f"mysql+pymysql://{username_sql}:{password_sql}@{server}/{db_name}",).connect() as conn:  # noqa
         df.reset_index(drop=True, inplace=True)
         for i in range(len(df)):
-            row = df.loc[[i],]
+            row = df.loc[[i], ]
             try:
                 row.to_sql(
                     name="mrt_realtime_crowded",

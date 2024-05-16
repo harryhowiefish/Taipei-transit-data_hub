@@ -3,8 +3,8 @@ import pandas as pd
 import json
 from dotenv import load_dotenv
 import os
-from datetime import datetime
-import re
+# from datetime import datetime
+# import re
 import numpy as np
 from sqlalchemy import create_engine
 load_dotenv()
@@ -28,7 +28,7 @@ def E_mrt_realtime_arrival():
     </getTrackInfo>
     </soap:Body>
     </soap:Envelope>
-    """
+    """  # noqa
 
     response = requests.post(url=url, headers=headers, data=xmldata)
     df = pd.DataFrame(json.loads(response.text.split("<?xml")[0]))
@@ -46,8 +46,8 @@ def T_mrt_realtime_arrival(df: pd.DataFrame):
             try:
                 text_list = x.split(":")
                 mins, seconds = int(text_list[0]), int(text_list[1])
-                return (int(mins*60+seconds))
-            except:
+                return (int(mins * 60 + seconds))
+            except:  # noqa
                 return (np.nan)
 
     df["arrive_time"] = df["CountDown"].apply(arrive_time_transform)
@@ -60,7 +60,7 @@ def T_mrt_realtime_arrival(df: pd.DataFrame):
     }, inplace=True)
     df["mrt_station_name"] = df["mrt_station_name"].str.rstrip("站")
     df["mrt_destination_name"] = df["mrt_destination_name"].str.rstrip("站")
-    filename = datetime.strftime(datetime.now(), "%Y-%m-%d_%H-%M-%S")
+    # filename = datetime.strftime(datetime.now(), "%Y-%m-%d_%H-%M-%S")
     # df.to_csv(f"./{filename}mrt_realtime_arrival.csv",
     #           encoding="utf-8-sig", index=False)
     # return ("OK")
@@ -74,7 +74,7 @@ def L_mrt_realtime_arrival(df: pd.DataFrame):
     # server = "host.docker.internal:3306"  #docker用
     server = "localhost:3306"
     db_name = "group2_db"
-    with create_engine(f"mysql+pymysql://{username_sql}:{password_sql}@{server}/{db_name}",).connect() as conn:
+    with create_engine(f"mysql+pymysql://{username_sql}:{password_sql}@{server}/{db_name}",).connect() as conn:  # noqa
         df.to_sql(
             name="mrt_realtime_arrival",
             con=conn,

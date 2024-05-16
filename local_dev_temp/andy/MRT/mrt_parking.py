@@ -28,7 +28,7 @@ def E_mrt_parking():
     <passWord>{password}</passWord>
     </getParkingLot>
     </soap:Body>
-    </soap:Envelope>"""
+    </soap:Envelope>"""  # noqa
 
     now = datetime.strftime(datetime.now(
         ZoneInfo('Asia/Taipei')), "%Y-%m-%d %H:%M:%S")
@@ -66,7 +66,7 @@ def T_mrt_parking(df: pd.DataFrame):
     df["line_type"] = df["StationNo"].apply(pattern_match_station_line_type)
 
     df = df.loc[:, ["ParkName", "StationNo", "StationName", "line_type",
-                    "ParkType", "ParkNowNo", "ParkTotalNo", "GetDatatime",]]
+                    "ParkType", "ParkNowNo", "ParkTotalNo", "GetDatatime", ]]
     df.rename(columns={
         "ParkName": "park_name",
         "StationNo": "mrt_station_id",
@@ -78,7 +78,7 @@ def T_mrt_parking(df: pd.DataFrame):
         "GetDatatime": "update_time"
     }, inplace=True)
 
-    filename = datetime.strftime(datetime.now(), "%Y-%m-%d_%H-%M-%S")
+    # filename = datetime.strftime(datetime.now(), "%Y-%m-%d_%H-%M-%S")
     # df.to_csv(f"./{filename}mrt_parking.csv",
     #           encoding="utf-8-sig", index=False)
     # return ("OK")
@@ -92,7 +92,7 @@ def L_mrt_parking_to_sql(df: pd.DataFrame):
     # server = "host.docker.internal:3306"  #docker用
     server = "localhost:3306"
     db_name = "group2_db"
-    with create_engine(f"mysql+pymysql://{username_sql}:{password_sql}@{server}/{db_name}",).connect() as conn:
+    with create_engine(f"mysql+pymysql://{username_sql}:{password_sql}@{server}/{db_name}",).connect() as conn:  # noqa
         df.to_sql(
             name="mrt_parking",
             con=conn,

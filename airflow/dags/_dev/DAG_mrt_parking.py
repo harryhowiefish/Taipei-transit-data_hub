@@ -3,7 +3,7 @@ import pandas as pd
 import json
 from dotenv import load_dotenv
 import os
-from datetime import datetime ,timedelta
+from datetime import datetime, timedelta
 import re
 from sqlalchemy import create_engine
 from airflow.decorators import dag, task
@@ -21,6 +21,7 @@ default_args = {
     "retry_delay": timedelta(minutes=2),
 }
 
+
 @dag(
     dag_id="DAG_mrt_parking",
     default_args=default_args,
@@ -28,9 +29,9 @@ default_args = {
     schedule_interval="*/5 * * * *",
     start_date=datetime(2024, 1, 1),
     catchup=False,
-    tags=["example", "decorator"]  # Optional: Add tags for better filtering in the UI
+    # Optional: Add tags for better filtering in the UI
+    tags=["example", "decorator"]
 )
-
 def DAG_mrt_parking():
     @task
     def E_mrt_parking():
@@ -50,16 +51,17 @@ def DAG_mrt_parking():
         <passWord>{password}</passWord>
         </getParkingLot>
         </soap:Body>
-        </soap:Envelope>"""
+        </soap:Envelope>"""  # noqa
 
-        now = datetime.strftime(datetime.now(ZoneInfo('Asia/Taipei')), "%Y-%m-%d %H:%M:%S")
+        now = datetime.strftime(datetime.now(
+            ZoneInfo('Asia/Taipei')), "%Y-%m-%d %H:%M:%S")
         response = requests.post(url=url, headers=headers,
-                                data=xmldata.encode("utf-8"))
+                                 data=xmldata.encode("utf-8"))
         df = pd.DataFrame(json.loads(response.text.split("<?xml")[0]))
         df["GetDatatime"] = now
         return (df)
-    @task
 
+    @task
     def T_mrt_parking(df):
         pattern = re.compile(r"[A-Z]+[0-9]+[A-Z]*")
 
@@ -83,10 +85,11 @@ def DAG_mrt_parking():
                 return (pattern.findall(x)[0])
             else:
                 return ("")
-        df["line_type"] = df["StationNo"].apply(pattern_match_station_line_type)
+        df["line_type"] = df["StationNo"].apply(
+            pattern_match_station_line_type)
 
         df = df.loc[:, ["ParkName", "StationNo", "StationName", "line_type",
-                        "ParkType", "ParkNowNo", "ParkTotalNo", "GetDatatime",]]
+                        "ParkType", "ParkNowNo", "ParkTotalNo", "GetDatatime"]]  # noqa
         df.rename(columns={
             "ParkName": "park_name",
             "StationNo": "mrt_station_id",
@@ -108,10 +111,10 @@ def DAG_mrt_parking():
     def L_mrt_parking_to_sql(df):
         username_sql = os.getenv("ANDY_USERNAME_SQL")
         password_sql = os.getenv("ANDY_PASSWORD_SQL")
-        server = "host.docker.internal:3306"  #docker用
+        server = "host.docker.internal:3306"  # docker用
         # server = "localhost:3306"
         db_name = "group2_db"
-        with create_engine(f"mysql+pymysql://{username_sql}:{password_sql}@{server}/{db_name}",).connect() as conn:
+        with create_engine(f"mysql+pymysql://{username_sql}:{password_sql}@{server}/{db_name}",).connect() as conn:  # noqa
             df.to_sql(
                 name="mrt_parking",
                 con=conn,
@@ -121,9 +124,9 @@ def DAG_mrt_parking():
         print("OK")
         return ("OK")
 
-
     E_df = E_mrt_parking()
     T_df = T_mrt_parking(df=E_df)
     L_mrt_parking_to_sql(df=T_df)
+
 
 DAG_mrt_parking()
