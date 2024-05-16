@@ -8,8 +8,8 @@ import re
 from sqlalchemy import create_engine, exc
 from airflow.decorators import dag, task
 from zoneinfo import ZoneInfo
-from MRT_ETL_function.mrt_realtime_crowded_BL import E_mrt_crowded_BL, T_mrt_crowded_BL, L_mrt_crowded_BL
-from MRT_ETL_function.upload_to_gcs_function import upload_to_bucket_string, L_df_to_gcs
+from utils.etl.mrt_realtime_crowded_BL import E_mrt_crowded_BL, T_mrt_crowded_BL, L_mrt_crowded_BL
+from utils.gcp.upload_to_gcs_function import upload_to_bucket_string, L_df_to_gcs
 # 使用getenv拿取帳號密碼
 load_dotenv()
 

@@ -9,14 +9,13 @@ import numpy as np
 from sqlalchemy import create_engine, exc
 from zoneinfo import ZoneInfo
 from google.cloud import storage
-from MRT_ETL_function.upload_to_gcs_function import upload_to_bucket_string
 load_dotenv()
 
 
-def E_mrt_crowded_BL():
+def E_mrt_crowded_others():
     username = os.getenv("ANDY_USERNAME")
     password = os.getenv("ANDY_PASSWORD")
-    url = "https://api.metro.taipei/metroapi/CarWeight.asmx"  # 板南線車廂擁擠度
+    url = "https://api.metro.taipei/metroapiex/CarWeight.asmx"  # 高運量車廂擁擠度
     headers = {
         "Content-type": "text/xml; charset=utf-8"
     }
@@ -25,23 +24,21 @@ def E_mrt_crowded_BL():
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
     <soap:Body>
-    <getCarWeightByInfo xmlns="http://tempuri.org/">
+    <getCarWeightByInfoEx xmlns="http://tempuri.org/">
     <userName>{username}</userName>
     <passWord>{password}</passWord>
-    </getCarWeightByInfo>
+    </getCarWeightByInfoEx>
     </soap:Body>
     </soap:Envelope>"""
 
     response = requests.post(url=url, headers=headers, data=xmldata)
-    json_df = json.loads(response.text.split("<?xml")[0])
-    df = pd.DataFrame(json.loads(json_df))
-    print("E_mrt_crowded_BL finished")
+    df = pd.DataFrame(json.loads(response.text.split("<?xml")[0]))
+    print("E_mrt_crowded_others finished")
     return (df)
 
 
-def T_mrt_crowded_BL(df: pd.DataFrame):
-    pattern = re.compile(r"[A-Za-z]+\s*")
-    df["StationName"] = df["StationName"].str.replace(pattern, "", regex=True)
+def T_mrt_crowded_others(df: pd.DataFrame):
+
     pattern = re.compile(r"^[A-Z]+")
 
     def pattern_match_station_line_type(x):
@@ -51,31 +48,33 @@ def T_mrt_crowded_BL(df: pd.DataFrame):
             return ("")
     df["line_type"] = df["StationID"].apply(pattern_match_station_line_type)
 
-    df = df.loc[:, ["StationID", "StationName", "line_type", "CID",
-                    "Car1", "Car2", "Car3", "Car4", "Car5", "Car6", "UpdateTime"]]
+    df["mrt_station_name"] = np.nan
+    df = df.loc[:, ["StationID", "mrt_station_name", "line_type", "CID",
+                    "Cart1L", "Cart2L", "Cart3L", "Cart4L", "Cart5L", "Cart6L", "utime"]]
+    df["CID"] = df["CID"].apply(lambda x: "下行" if int(
+        x) == 1 else "上行")  # 超重要  經過比對 1是下行 2是上行
     df.rename(columns={
         "StationID": "mrt_station_id",
         "StationName": "mrt_station_name",
         "CID": "direction",
-        "Car1": "cart1",
-        "Car2": "cart2",
-        "Car3": "cart3",
-        "Car4": "cart4",
-        "Car5": "cart5",
-        "Car6": "cart6",
-        "UpdateTime": "update_time",
-
+        "Cart1L": "cart1",
+        "Cart2L": "cart2",
+        "Cart3L": "cart3",
+        "Cart4L": "cart4",
+        "Cart5L": "cart5",
+        "Cart6L": "cart6",
+        "utime": "update_time",
     }, inplace=True)
-
+    df = df.loc[df["line_type"].isin(["G", "O", "R"]),].reset_index(drop=True)
     filename = datetime.strftime(datetime.now(), "%Y-%m-%d_%H-%M-%S")
-    # df.to_csv(f"./{filename}mrt_realtime_crowded_BL.csv",
+    # df.to_csv(f"./{filename}mrt_realtime_crowded_others.csv",
     #           encoding="utf-8-sig", index=False)
     # return ("OK")
-    print("T_mrt_crowded_BL finished")
+    print("T_mrt_crowded_others finished")
     return (df)
 
 
-# def L_mrt_crowded_BL(df: pd.DataFrame):
+# def L_mrt_crowded_others(df: pd.DataFrame):
 #     username_sql = os.getenv("ANDY_USERNAME_SQL")
 #     password_sql = os.getenv("ANDY_PASSWORD_SQL")
 #     # server = "host.docker.internal:3306"  #docker用
@@ -88,11 +87,11 @@ def T_mrt_crowded_BL(df: pd.DataFrame):
 #             if_exists="append",
 #             index=False
 #         )
-#     print("L_mrt_crowded_BL finished")
-#     return ("OK")
+#     print("L_mrt_crowded_others finished")
+#     return ("L_mrt_crowded_others finished")
 
 
-def L_mrt_crowded_BL(df: pd.DataFrame, port: str = "docker"):
+def L_mrt_crowded_others(df: pd.DataFrame, port: str = "docker"):
     username_sql = os.getenv("ANDY_USERNAME_SQL")
     password_sql = os.getenv("ANDY_PASSWORD_SQL")
     if port == "docker":
@@ -119,19 +118,11 @@ def L_mrt_crowded_BL(df: pd.DataFrame, port: str = "docker"):
                 print("Error!!!!")
                 print(e)
                 continue
-    print("L_mrt_crowded_BL finished")
-    return ("L_mrt_crowded_BL finished")
-
-# def L_to_gcs_mrt_crowded_BL(df: pd.DataFrame, bucket_name: str):
-#     now = datetime.strftime(datetime.now(
-#         ZoneInfo('Asia/Taipei')), "%Y%m%d_%H%M")
-#     blob_name = f"{bucket_name}{now}.csv"
-#     upload_to_bucket_string(df=df, blob_name=blob_name,
-#                             bucket_name=bucket_name)
+    print("L_mrt_crowded_others finished")
+    return ("L_mrt_crowded_others finished")
 
 
-
-if __name__ == "__main__":
-    E_df = E_mrt_crowded_BL()
-    T_df = T_mrt_crowded_BL(df=E_df)
-    L_mrt_crowded_BL(df=T_df)
+if __name__ == "main":
+    E_df = E_mrt_crowded_others()
+    T_df = T_mrt_crowded_others(df=E_df)
+    L_mrt_crowded_others(df=T_df)

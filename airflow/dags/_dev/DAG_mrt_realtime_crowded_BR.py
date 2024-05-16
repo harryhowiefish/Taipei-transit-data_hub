@@ -9,8 +9,8 @@ from sqlalchemy import create_engine, exc
 import numpy as np
 from airflow.decorators import dag, task
 from zoneinfo import ZoneInfo
-from MRT_ETL_function.mrt_realtime_crowded_BR import E_mrt_crowded_BR, T_mrt_crowded_BR, L_mrt_crowded_BR
-from MRT_ETL_function.upload_to_gcs_function import upload_to_bucket_string, L_df_to_gcs
+from utils.etl.mrt_realtime_crowded_BR import E_mrt_crowded_BR, T_mrt_crowded_BR, L_mrt_crowded_BR
+from utils.gcp.upload_to_gcs_function import upload_to_bucket_string, L_df_to_gcs
 # 使用getenv拿取帳號密碼
 load_dotenv()
 

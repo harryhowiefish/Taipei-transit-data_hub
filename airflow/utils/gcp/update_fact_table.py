@@ -2,7 +2,6 @@ import os
 import pandas as pd
 from google.cloud import bigquery
 from google.oauth2.service_account import Credentials
-import db_dtypes
 
 
 def update_data_insert_merge_into_ods(target_dataset_name: str, source_dataset_name: str, source_table_name: str, target_table_name: str, client: bigquery.Client):

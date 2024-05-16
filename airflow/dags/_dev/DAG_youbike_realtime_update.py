@@ -13,9 +13,9 @@ from airflow import DAG
 from zoneinfo import ZoneInfo
 from google.cloud import bigquery
 from google.oauth2.service_account import Credentials
-from bike_GCS_bq_function.update_fact_table import update_data_insert_merge_into_ods, update_data_insert_merge_into_fact_bike_realtime
+from utils.gcp.update_fact_table import update_data_insert_merge_into_ods, update_data_insert_merge_into_fact_bike_realtime
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './opt/airflow/dags/harry_GCS_BigQuery_write_cred.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/opt/airflow/dags/harry_GCS_BigQuery_write_cred.json'
 BQ_CLIENT_DOCKER = bigquery.Client()
 
 
