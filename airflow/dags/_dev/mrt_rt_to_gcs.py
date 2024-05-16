@@ -16,7 +16,7 @@ default_args = {
     'retry_delay': timedelta(minutes=1)
 }
 
-key_path = "/opt/airflow/dags/GCS_BigQuery_write_cred.json"
+key_path = "/opt/airflow/dags/andy-gcs_key.json"
 
 credentials = service_account.Credentials.from_service_account_file(
     key_path,
