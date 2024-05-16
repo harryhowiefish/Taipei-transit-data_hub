@@ -57,7 +57,7 @@ def DAG_mrt_crowded_BR():
     T_df = DAG_T_task(df=E_df)
     DAG_L_task(df=T_df, port="docker")
     DAG_L_df_to_gcs_task(
-        df=T_df, bucket_name="mrt_realtime_crowded", blob_name_tag="BR")
+        df=T_df, bucket_name="mrt_realtime_crowded", blob_name_tag="_BR")
 
 
 DAG_mrt_crowded_BR()

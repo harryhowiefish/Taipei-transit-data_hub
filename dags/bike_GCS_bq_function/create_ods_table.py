@@ -2,7 +2,6 @@ import os
 import pandas as pd
 from google.cloud import bigquery
 from google.oauth2.service_account import Credentials
-import db_dtypes
 
 
 # def youbike_ods_before0504_create(client: bigquery.Client ):
@@ -82,7 +81,7 @@ import db_dtypes
 #     query_job.result()
 #     print(f"Youbike_ODS.youbike_ods has been created")
 
-def ODS_youbike_create(dataset_name: str, create_table_name: str, be_table_name: str, af_table_name: str, client: bigquery.Client):
+def ODS_youbike_create(dataset_name: str, source_dataset_name: str, create_table_name: str, be_table_name: str, af_table_name: str, client: bigquery.Client):
     """create youbike ods table(combine two external table(before0504 and after 0504))"""
     query_job = client.query(
         f"""
@@ -106,7 +105,7 @@ def ODS_youbike_create(dataset_name: str, create_table_name: str, be_table_name:
                 lat,
                 lng,
                 bemp AS aval_space
-            FROM `{dataset_name}.{be_table_name}`)
+            FROM `{source_dataset_name}.{be_table_name}`)
             UNION ALL
             (SELECT
                 sno AS bike_station_id,
@@ -127,7 +126,7 @@ def ODS_youbike_create(dataset_name: str, create_table_name: str, be_table_name:
                 latitude AS lat,
                 longitude AS lng,
                 available_return_bikes AS aval_space
-            FROM `{dataset_name}.{af_table_name}`)
+            FROM `{source_dataset_name}.{af_table_name}`)
         )
         ;
     """
@@ -139,11 +138,13 @@ def ODS_youbike_create(dataset_name: str, create_table_name: str, be_table_name:
 if __name__ == "__main__":
     # youbike_ods_before0504_create()
     # youbike_ods_after0504_create()
-    BIGQUERY_CREDENTIALS_FILE_PATH = r"D:\data_engineer\TIR_group2\TIR101_Group2\secrets\harry_GCS_BigQuery_write_cred.json"
+    # BIGQUERY_CREDENTIALS_FILE_PATH = r"D:\data_engineer\TIR_group2\TIR101_Group2\secrets\harry_GCS_BigQuery_write_cred.json"
+    BIGQUERY_CREDENTIALS_FILE_PATH = r"C:\TIR101_Group2\secrets\harry_GCS_BigQuery_write_cred.json"
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = BIGQUERY_CREDENTIALS_FILE_PATH
     BQ_CLIENT = bigquery.Client()
-    ODS_youbike_create(dataset_name="Youbike",
+    ODS_youbike_create(dataset_name="ETL_ODS",
                        create_table_name="ODS_youbike_realtime",
+                       source_dataset_name="ETL_SRC",
                        be_table_name="SRC_youbike_before0504",
                        af_table_name="SRC_youbike_after0504",
                        client=BQ_CLIENT)

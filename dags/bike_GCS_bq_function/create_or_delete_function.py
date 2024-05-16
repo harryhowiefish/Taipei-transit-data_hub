@@ -2,14 +2,9 @@ import os
 import pandas as pd
 from google.cloud import bigquery
 from google.oauth2.service_account import Credentials
-import db_dtypes
-
-BIGQUERY_CREDENTIALS_FILE_PATH = r"D:\data_engineer\TIR_group2\TIR101_Group2\secrets\harry_GCS_BigQuery_write_cred.json"
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = BIGQUERY_CREDENTIALS_FILE_PATH
-BQ_CLIENT = bigquery.Client()
 
 
-def create_dataset(dataset_name: str, location: str = "asia-east1", client: bigquery.Client = BQ_CLIENT):
+def create_dataset(dataset_name: str, client: bigquery.Client, location: str = "asia-east1"):
     """Create a dataset"""
     porject_name = client.project
     dataset_id = f"{porject_name}.{dataset_name}"
@@ -22,7 +17,7 @@ def create_dataset(dataset_name: str, location: str = "asia-east1", client: bigq
         f"created {dataset_name} in project {porject_name} ,location:{location}")
 
 
-def delete_dataset(dataset_name: str, client: bigquery.Client = BQ_CLIENT):  # 刪除dataset名稱
+def delete_dataset(dataset_name: str, client: bigquery.Client):  # 刪除dataset名稱
     porject_name = client.project
     dataset_id = f"{porject_name}.{dataset_name}"
     client.delete_dataset(dataset=dataset_id,
@@ -30,12 +25,19 @@ def delete_dataset(dataset_name: str, client: bigquery.Client = BQ_CLIENT):  # �
     print(f"dataset {dataset_name} in project {porject_name} has been delete")
 
 
-def delete_table(dataset_name, table_name, client: bigquery.Client = BQ_CLIENT):
+def delete_table(dataset_name, table_name, client: bigquery.Client):
     table_ref = client.dataset(dataset_name).table(table_name)
     client.delete_table(table_ref)
     print("Table '{}' successfully deleted.".format(table_name))
 
 
 if __name__ == "__main__":
-    create_dataset("Youbike")
+    # BIGQUERY_CREDENTIALS_FILE_PATH = r"D:\data_engineer\TIR_group2\TIR101_Group2\secrets\harry_GCS_BigQuery_write_cred.json"
+    BIGQUERY_CREDENTIALS_FILE_PATH = r"C:\TIR101_Group2\secrets\harry_GCS_BigQuery_write_cred.json"
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = BIGQUERY_CREDENTIALS_FILE_PATH
+    BQ_CLIENT = bigquery.Client()
+    create_dataset(dataset_name="ETL_SRC", client=BQ_CLIENT)
+    create_dataset(dataset_name="ETL_ODS", client=BQ_CLIENT)
+    create_dataset(dataset_name="ETL_FACT", client=BQ_CLIENT)
+    create_dataset(dataset_name="ETL_DIM", client=BQ_CLIENT)
     # delete_dataset("create_test")
