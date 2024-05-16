@@ -6,7 +6,9 @@ pandas==2.1.4  # use pandas <2.2.0 to avoid conflict with SQLAlchemy==1.4.51 whe
 SQLAlchemy==1.4.51 # python3.12 latest supports 2.0.29, but airflow only supports up
 jupyter==1.0.0
 PyMySQL==1.1.0
-python-dotenv
+python-dotenv==1.0.1
+cryptography==42.0.5
+bs4==0.0.2
+geopy==2.4.1
 google-cloud-storage==2.16.0
 google-cloud-bigquery==3.22.0
-db-dtypes==1.2.0
