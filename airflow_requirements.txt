@@ -1,8 +1,0 @@
-pymongo==4.6.3
-requests==2.31.0
-# apache-airflow-providers-mongo==4.0.0
-# pandas==2.2.2
-pandas==2.1.4  # use pandas <2.2.0 to avoid conflict with SQLAlchemy==1.4.51 when you connect to local mysql from docker conatainer
-SQLAlchemy==1.4.51 # python3.12 latest supports 2.0.29, but airflow only supports up
-PyMySQL==1.1.0
-bs4==0.0.2

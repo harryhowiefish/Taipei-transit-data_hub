@@ -1,0 +1,6 @@
+requests==2.31.0
+pandas==2.1.4  # use pandas <2.2.0 to avoid conflict with SQLAlchemy==1.4.51 when you connect to local mysql from docker conatainer
+bs4==0.0.2
+google-cloud-storage==2.16.0
+google-cloud-bigquery==3.22.0
+db-dtypes==1.2.0
