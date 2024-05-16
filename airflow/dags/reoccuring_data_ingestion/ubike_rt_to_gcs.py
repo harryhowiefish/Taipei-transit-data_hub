@@ -1,13 +1,18 @@
 from datetime import timedelta, datetime
-from google.oauth2 import service_account
 from airflow.decorators import dag, python_task
 from google.cloud import storage
 import requests
 import pandas as pd
 import logging
 import pendulum
+from utils.gcp import gcs
+import os
+
+# get variables/infomation from enviornment (secrets or settings)
+BUCKET_TYPE = os.environ['BUCKET_TYPE']
 
 
+# these are some common arguments for dags
 default_args = {
     'owner': 'TIR101_G2',
     'retries': 0,
@@ -16,37 +21,39 @@ default_args = {
 
 
 @dag(
+    # basic setting for all dags
     dag_id='ubike_rt_to_gcs',
     default_args=default_args,
     schedule_interval='*/10 * * * *',
     start_date=datetime(2024, 4, 10),
+    tags=["reoccuring", "data_ingestion"],
     catchup=False)
 def ubike_rt_to_gcs():
+    # setup the client that will be use in the dags
+    gcs_client = storage.Client()
 
     @python_task
     def get_rt_data():
-
-        # change this to match where the google key is located
-        key_path = "/opt/airflow/dags/GCS_BigQuery_write_cred.json"
-
-        credentials = service_account.Credentials.from_service_account_file(
-            key_path,
-            scopes=["https://www.googleapis.com/auth/cloud-platform"],
-        )
-        client = storage.Client(credentials=credentials)
+        # get data from url
         resp = requests.get(
             'https://tcgbusfs.blob.core.windows.net/dotapp/youbike/v2/youbike_immediate.json')  # noqa
         single_result = resp.json()
         single_result = pd.json_normalize(single_result)
+
+        # set up the required names for inserting the data into GCS
         now = pendulum.now('Asia/Taipei').format("MM_DD_YYYY/HH_mm")
+        bucket_name = f"{BUCKET_TYPE}_youbike_realtime"
+        filename = f'dt={now}.csv'
 
-        # the bucket has to be first created in GCS before used
-        bucket = client.bucket('youbike_realtime')
-        blob = bucket.blob(f'{now}.csv')
-        blob.upload_from_string(single_result.to_csv(index=False))
-        logging.info(f'file: {now}.csv created!')
+        # inserting the file into GCS
+        result = gcs.upload_df_to_gcs(
+            gcs_client, bucket_name, filename, single_result)
+        if result:
+            logging.info(f'file: {filename} created!')
 
+    # call the previously defined functions
     get_rt_data()
 
 
+# this actually runs the whole DAG
 ubike_rt_to_gcs()

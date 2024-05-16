@@ -16,7 +16,6 @@ def upload_df_to_gcs(
     bucket_name: str,
     blob_name: str,
     df: pd.DataFrame,
-    filetype: str = "parquet",
 ) -> bool:
     """
     Upload a pandas dataframe to GCS.
@@ -39,19 +38,8 @@ def upload_df_to_gcs(
         print("File already exists in GCP.")
         return False
     try:
-        if filetype == "parquet":
-            blob.upload_from_string(
-                df.to_parquet(index=False), content_type="application/octet-stream"
-            )
-        elif filetype == "csv":
-            blob.upload_from_string(
-                df.to_csv(index=False), content_type="text/csv")
-        elif filetype == "jsonl":
-            blob.upload_from_string(
-                df.to_json(orient="records", lines=True),
-                content_type="application/jsonl",
-            )
-        print("Upload successful.")
+        blob.upload_from_string(
+            df.to_csv(index=False), content_type="text/csv")
         return True
     except Exception as e:
         raise Exception(f"Failed to upload pd.DataFrame to GCS, reason: {e}")
@@ -118,14 +106,13 @@ def download_df_from_gcs(
         return pd.read_parquet(data_io)
     elif filetype == "jsonl":
         return pd.read_json(data_io, lines=True)
-    else:
-        raise ValueError(
-            f"Invalid filetype: {
-                filetype}. Please specify 'parquet' or 'csv' or 'jsonl'."
-        )
+    # else:
+    #     raise ValueError(
+    #         f"Invalid filetype: {filetype}. Please specify 'parquet' or 'csv' or 'jsonl'."  # noqa
+    #     )
 
 
-def delete_blob(client, bucket_name, blob_name) -> bool:
+def delete_blob(client: storage.Client, bucket_name, blob_name) -> bool:
     """
     Delete a blob from GCS.
 
@@ -137,17 +124,14 @@ def delete_blob(client, bucket_name, blob_name) -> bool:
     Returns:
         bool: True if the deletion was successful, False otherwise.
     """
-    try:
-        bucket = client.bucket(bucket_name)
-        blob = bucket.blob(blob_name)
-        if not blob.exists():
-            print(f"Can't find {blob_name} in bucket {bucket_name}.")
-            return False
-        blob.delete()
-        print(f"Blob {blob_name} deleted from bucket {bucket_name}.")
-        return True
-    except Exception as e:
-        raise Exception(f"Failed to delete blob, reason: {e}")
+    bucket = client.bucket(bucket_name)
+    blob = bucket.blob(blob_name)
+    if not blob.exists():
+        print(f"Can't find {blob_name} in bucket {bucket_name}.")
+        return False
+    blob.delete()
+    print(f"Blob {blob_name} deleted from bucket {bucket_name}.")
+    return True
 
 
 def rename_blob(
@@ -183,13 +167,12 @@ def rename_blob(
     # Delete the original blob
     blob.delete()
 
-    print(f"Blob {blob_name} renamed to {
-          new_blob_name} in bucket {bucket_name}.")
+    # print(f'Blob {blob_name} renamed to {new_blob_name} in bucket {bucket_name}.')  # noqa
     return True
 
 
 def list_blobs(
-    client: storage.Client, bucket_name: str, blob_prefix: str = None
+    client: storage.Client, bucket_name: str, folder_name: str = None
 ) -> List[storage.Blob]:
     """
     List all blobs in a specified GCS bucket optionally filtered by a prefix.
@@ -202,14 +185,10 @@ def list_blobs(
     Returns:
         List[storage.Blob]: A list of blobs sorted by their names.
     """
-    try:
-        bucket = client.get_bucket(bucket_name)
-        if blob_prefix:
-            blobs = bucket.list_blobs(prefix=blob_prefix)
-        else:
-            blobs = bucket.list_blobs()
+    bucket = client.get_bucket(bucket_name)
+    if folder_name:
+        blobs = bucket.list_blobs(prefix=folder_name)
+    else:
+        blobs = bucket.list_blobs()
 
-        return sorted(blobs, key=lambda x: x.name)
-    except Exception as e:
-        raise Exception(f"Failed to list blobs in bucket {
-                        bucket_name}, reason: {e}")
+    return sorted(blobs, key=lambda x: x.name)
