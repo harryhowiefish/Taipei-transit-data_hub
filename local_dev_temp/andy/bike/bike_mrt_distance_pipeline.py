@@ -128,7 +128,8 @@ def upload_df_to_bq(
 
 
 if __name__ == "__main__":
-    BIGQUERY_CREDENTIALS_FILE_PATH = r"D:\data_engineer\dev_TIR_group2\Taipei-transit-data_hub\airflow\dags\harry_GCS_BigQuery_write_cred.json"
+    # BIGQUERY_CREDENTIALS_FILE_PATH = r"D:\data_engineer\dev_TIR_group2\Taipei-transit-data_hub\airflow\dags\harry_GCS_BigQuery_write_cred.json"
+    BIGQUERY_CREDENTIALS_FILE_PATH = r"C:\dev_TIR101\Taipei-transit-data_hub\airflow\dags\harry_GCS_BigQuery_write_cred.json"
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = BIGQUERY_CREDENTIALS_FILE_PATH
     BQ_CLIENT = bigquery.Client()
     # mrt
@@ -146,8 +147,8 @@ if __name__ == "__main__":
     ]
     upload_df_to_bq(client=BQ_CLIENT,
                     df=youbike_mrt_distance,
-                    dataset_name="ETL_FACT",
-                    table_name="FACT_youbike_mrt_distance",
+                    dataset_name="ETL_DIM",
+                    table_name="DIM_youbike_mrt_distance",
                     schema=youbike_mrt_distance_schema,
                     filetype="csv",)
     # bus
@@ -163,7 +164,7 @@ if __name__ == "__main__":
     ]
     upload_df_to_bq(client=BQ_CLIENT,
                     df=youbike_bus_distance,
-                    dataset_name="ETL_FACT",
-                    table_name="FACT_youbike_bus_distance",
+                    dataset_name="ETL_DIM",
+                    table_name="DIM_youbike_bus_distance",
                     schema=youbike_bus_distance_schema,
                     filetype="csv",)
