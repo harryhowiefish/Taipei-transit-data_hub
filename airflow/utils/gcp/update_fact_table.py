@@ -2,7 +2,6 @@ import os
 import pandas as pd
 from google.cloud import bigquery
 from google.oauth2.service_account import Credentials
-import db_dtypes
 
 
 def update_data_insert_merge_into_ods(target_dataset_name: str, source_dataset_name: str, source_table_name: str, target_table_name: str, client: bigquery.Client):
@@ -90,8 +89,8 @@ def update_data_insert_merge_into_fact_bike_realtime(target_dataset_name: str, s
 
 
 if __name__ == "__main__":
-    # BIGQUERY_CREDENTIALS_FILE_PATH = r"D:\data_engineer\TIR_group2\TIR101_Group2\secrets\harry_GCS_BigQuery_write_cred.json"
-    BIGQUERY_CREDENTIALS_FILE_PATH = r"C:\TIR101_Group2\secrets\harry_GCS_BigQuery_write_cred.json"
+    BIGQUERY_CREDENTIALS_FILE_PATH = r"D:\data_engineer\TIR_group2\TIR101_Group2\secrets\harry_GCS_BigQuery_write_cred.json"
+    # BIGQUERY_CREDENTIALS_FILE_PATH = r"C:\TIR101_Group2\secrets\harry_GCS_BigQuery_write_cred.json"
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = BIGQUERY_CREDENTIALS_FILE_PATH
     BQ_CLIENT = bigquery.Client()
     update_data_insert_merge_into_ods(target_dataset_name="ETL_ODS",

@@ -7,8 +7,8 @@ from datetime import datetime
 import re
 from sqlalchemy import create_engine, exc
 from zoneinfo import ZoneInfo
-import pymysql
-from pymysql.err import IntegrityError, InternalError
+# import pymysql
+# from pymysql.err import IntegrityError, InternalError
 
 load_dotenv()
 

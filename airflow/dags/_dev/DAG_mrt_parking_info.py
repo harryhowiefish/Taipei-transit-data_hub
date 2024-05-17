@@ -8,9 +8,9 @@ import re
 from sqlalchemy import create_engine
 from airflow.decorators import dag, task
 from zoneinfo import ZoneInfo
-from MRT_ETL_function.mrt_parking_info import E_mrt_parking_info, T_mrt_parking_info, L_mrt_parking_info
+from utils.etl.mrt_parking_info import E_mrt_parking_info, T_mrt_parking_info, L_mrt_parking_info
 from zoneinfo import ZoneInfo
-from MRT_ETL_function.upload_to_gcs_function import upload_to_bucket_string, L_df_to_gcs
+from utils.gcp.upload_to_gcs_function import upload_to_bucket_string, L_df_to_gcs
 # 使用getenv拿取帳號密碼
 load_dotenv()
 

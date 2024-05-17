@@ -9,7 +9,6 @@ from sqlalchemy import create_engine, exc
 from zoneinfo import ZoneInfo
 from io import StringIO
 from google.cloud import storage
-from MRT_ETL_function.upload_to_gcs_function import upload_to_bucket_string
 
 # mrt_usage_history
 # get csv download of every month's data

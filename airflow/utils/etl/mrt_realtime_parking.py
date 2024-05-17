@@ -8,8 +8,6 @@ import re
 from sqlalchemy import create_engine
 from zoneinfo import ZoneInfo
 from google.cloud import storage
-from MRT_ETL_function.upload_to_gcs_function import upload_to_bucket_string
-# 使用getenv拿取帳號密碼
 load_dotenv()
 
 
