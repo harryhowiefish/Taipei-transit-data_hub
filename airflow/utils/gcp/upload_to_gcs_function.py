@@ -7,7 +7,7 @@ from zoneinfo import ZoneInfo
 
 def upload_to_bucket_string(df: pd.DataFrame, blob_name: str, bucket_name: str):
     # os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = r'D:\data_engineer\TIR_group2\TIR101_Group2\secrets\andy-gcs_key.json'
-    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/opt/airflow/secrets/andy-gcs_key.json'
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/opt/airflow/dags/andy-gcs_key.json'
 
     storage_client = storage.Client()
     bucket = storage_client.get_bucket(bucket_name)

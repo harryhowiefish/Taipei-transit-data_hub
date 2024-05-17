@@ -2,7 +2,6 @@ import os
 import pandas as pd
 from google.cloud import bigquery
 from google.oauth2.service_account import Credentials
-import db_dtypes
 
 
 def DIM_youbike_bike_station_create(dataset_name: str, source_dataset_name: str, create_table_name: str, ods_table_name: str, client: bigquery.Client):

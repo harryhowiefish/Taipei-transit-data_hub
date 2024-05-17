@@ -9,7 +9,6 @@ import numpy as np
 from sqlalchemy import create_engine, exc
 from zoneinfo import ZoneInfo
 from google.cloud import storage
-from MRT_ETL_function.upload_to_gcs_function import upload_to_bucket_string
 load_dotenv()
 
 
@@ -100,7 +99,6 @@ def L_mrt_realtime_arrival(df: pd.DataFrame, port: str = "docker"):
                 continue
     print("L_mrt_realtime_arrival finished")
     return ("L_mrt_realtime_arrival finished")
-
 
 
 if __name__ == "__main__":
