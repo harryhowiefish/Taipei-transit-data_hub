@@ -10,6 +10,7 @@ import logging
 
 BQ_PREFIX = os.environ['BIGQUERY_PREFIX']
 PROJECT_NAME = os.environ['PROJECT_NAME']
+BUCKET_TYPE = os.environ['BUCKET_TYPE']
 CLIENT = bigquery.Client()
 
 # these are some common arguments for dags
@@ -25,21 +26,31 @@ default_args = {
     start_date=pendulum.today(tz='Asia/Taipei'),
     tags=['one_time_ETL']
 )
-def etl_city_code():
+def etl_time_table():
 
-    src_name = 'src_city_code'
-    dim_name = 'dim_city_code'
+    src_name = 'src_time_table'
+    dim_name = 'dim_time_table'
 
     @python_task
     def gcs_to_src():
         job = CLIENT.query(
             f'''
             CREATE OR REPLACE EXTERNAL TABLE {PROJECT_NAME}.{BQ_PREFIX}ETL_SRC.{src_name} (
-            city_code STRING NOT NULL,
-            city_name STRING NOT NULL,
+            date DATE NOT NULL,
+            day_of_week INTEGER NOT NULL,
+            day_of_year INTEGER NOT NULL,
+            weekend STRING NOT NULL,
+            year INTEGER NOT NULL,
+            quarter INTEGER NOT NULL,
+            month INTEGER NOT NULL,
+            day INTEGER NOT NULL,
+            days_in_month INTEGER NOT NULL,
+            day_name_en STRING NOT NULL,
+            month_name_en STRING NOT NULL,
+
             ) OPTIONS (
                 format = 'CSV',
-                uris = ['gs://static_reference/additional_references/city_code.csv'],
+                uris = ['gs://{BUCKET_TYPE}static_reference/time_table/*.csv'],
                 skip_leading_rows = 1);
                 '''  # noqa
         )
@@ -58,7 +69,10 @@ def etl_city_code():
             f'''
             CREATE OR REPLACE TABLE {PROJECT_NAME}.{target_dataset}.{dim_name} as (
             SELECT
-                city_code,city_name
+                date,day_of_week,day_of_year,weekend,
+                year,quarter,month,day,days_in_month,
+                day_name_en,month_name_en
+
             FROM
                 {PROJECT_NAME}.{source_dataset}.{src_name}
 
@@ -74,4 +88,4 @@ def etl_city_code():
     gcs_to_src() >> src_to_dim()
 
 
-etl_city_code()
+etl_time_table()
