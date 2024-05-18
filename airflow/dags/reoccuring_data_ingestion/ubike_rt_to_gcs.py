@@ -42,7 +42,7 @@ def ubike_rt_to_gcs():
 
         # set up the required names for inserting the data into GCS
         now = pendulum.now('Asia/Taipei').format("MM_DD_YYYY/HH_mm")
-        bucket_name = f"{BUCKET_TYPE}_youbike_realtime"
+        bucket_name = f"{BUCKET_TYPE}youbike_realtime"
         filename = f'dt={now}.csv'
 
         # inserting the file into GCS
