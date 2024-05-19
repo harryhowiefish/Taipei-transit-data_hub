@@ -13,7 +13,7 @@ import logging
 
 CLIENT = storage.Client()
 BUCKET_TYPE = os.environ['BUCKET_TYPE']
-
+# BUCKET_TYPE = ''
 # these are some common arguments for dags
 default_args = {
     'owner': 'TIR101_G2',
@@ -128,7 +128,7 @@ def bike_history_to_gcs():
         gcs.upload_df_to_gcs(CLIENT,
                              bucket_name,
                              filename,
-                             transform_df)
+                             transform_df.reset_index())
         return
 
     full_df = get_data_listing()
