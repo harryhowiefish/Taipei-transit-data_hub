@@ -36,8 +36,8 @@ if __name__ == "__main__":
     BIGQUERY_CREDENTIALS_FILE_PATH = r"C:\TIR101_Group2\secrets\harry_GCS_BigQuery_write_cred.json"
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = BIGQUERY_CREDENTIALS_FILE_PATH
     BQ_CLIENT = bigquery.Client()
-    create_dataset(dataset_name="ETL_SRC", client=BQ_CLIENT)
-    create_dataset(dataset_name="ETL_ODS", client=BQ_CLIENT)
-    create_dataset(dataset_name="ETL_FACT", client=BQ_CLIENT)
-    create_dataset(dataset_name="ETL_DIM", client=BQ_CLIENT)
+    create_dataset(dataset_name="ANDY_ETL_SRC", client=BQ_CLIENT)
+    create_dataset(dataset_name="ANDY_ETL_ODS", client=BQ_CLIENT)
+    create_dataset(dataset_name="ANDY_ETL_FACT", client=BQ_CLIENT)
+    create_dataset(dataset_name="ANDY_ETL_DIM", client=BQ_CLIENT)
     # delete_dataset("create_test")
