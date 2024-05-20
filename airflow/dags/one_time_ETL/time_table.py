@@ -8,7 +8,8 @@ import os
 import pendulum
 import logging
 
-BQ_PREFIX = os.environ['BIGQUERY_PREFIX']
+# BQ_PREFIX = os.environ['BIGQUERY_PREFIX']
+BQ_PREFIX = ''
 PROJECT_NAME = os.environ['PROJECT_NAME']
 BUCKET_TYPE = os.environ['BUCKET_TYPE']
 CLIENT = bigquery.Client()
@@ -28,8 +29,8 @@ default_args = {
 )
 def etl_time_table():
 
-    src_name = 'src_time_table'
-    dim_name = 'dim_time_table'
+    src_name = 'SRC_time_table'
+    dim_name = 'DIM_time_table'
 
     @python_task
     def gcs_to_src():
@@ -50,7 +51,7 @@ def etl_time_table():
 
             ) OPTIONS (
                 format = 'CSV',
-                uris = ['gs://{BUCKET_TYPE}static_reference/time_table/*.csv'],
+                uris = ['gs://{BUCKET_TYPE}static_reference/time_tables/*.csv'],
                 skip_leading_rows = 1);
                 '''  # noqa
         )

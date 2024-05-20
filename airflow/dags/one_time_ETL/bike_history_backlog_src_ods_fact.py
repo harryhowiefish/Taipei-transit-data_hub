@@ -6,6 +6,7 @@ import pendulum
 import logging
 
 BQ_PREFIX = os.environ['BIGQUERY_PREFIX']
+# BQ_PREFIX = ''
 PROJECT_NAME = os.environ['PROJECT_NAME']
 CLIENT = bigquery.Client()
 
@@ -21,13 +22,46 @@ default_args = {
     start_date=pendulum.today(tz='Asia/Taipei'),
     tags=['one_time_ETL']
 )
-def bike_history_create_ods_fact():
+def bike_history_create_src_ods_fact():
     src_dataset = f'{BQ_PREFIX}ETL_SRC'
     ods_dataset = f'{BQ_PREFIX}ETL_ODS'
     fact_dataset = f'{BQ_PREFIX}ETL_FACT'
-    src_name = 'src_bike_history'
-    ods_name = 'ods_bike_history'
-    fact_name = 'fact_bike_history'
+    src_name = 'SRC_bike_history'
+    ods_name = 'ODS_bike_history'
+    fact_name = 'FACT_bike_history'
+
+    @python_task
+    def gcs_to_src():
+        job = CLIENT.query(
+            f"""
+                CREATE OR REPLACE EXTERNAL TABLE {PROJECT_NAME}.{BQ_PREFIX}ETL_SRC.{src_name}
+                (
+                    index INT,
+                    rent_time TIMESTAMP,
+                    rent_station STRING,
+                    return_time TIMESTAMP,
+                    return_station STRING,
+                    rent STRING,
+                    infodate DATE
+                )
+                WITH PARTITION COLUMNS
+                OPTIONS (
+                    format = 'CSV',
+                uris = [
+                        'gs://static_reference/bike_history/*.csv'
+                    ],
+                    hive_partition_uri_prefix = 'gs://static_reference/bike_history/',
+                    skip_leading_rows = 1,
+                    max_bad_records = 1
+                )
+            """  # noqa
+        )
+        while job.done() is False:
+            pass
+        logging.info(job.done(), job.exception())
+        if job.exception():
+            raise ConnectionRefusedError
+        return
 
     @python_task
     def src_to_ods():
@@ -90,7 +124,7 @@ def bike_history_create_ods_fact():
         if job.exception():
             raise ConnectionRefusedError
         return
-    src_to_ods() >> ods_to_fact()
+    gcs_to_src() >> src_to_ods() >> ods_to_fact()
 
 
-bike_history_create_ods_fact()
+bike_history_create_src_ods_fact()

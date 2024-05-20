@@ -9,6 +9,7 @@ import pendulum
 import logging
 
 BQ_PREFIX = os.environ['BIGQUERY_PREFIX']
+# BQ_PREFIX = ''
 PROJECT_NAME = os.environ['PROJECT_NAME']
 CLIENT = bigquery.Client()
 
@@ -27,8 +28,8 @@ default_args = {
 )
 def etl_city_code():
 
-    src_name = 'src_city_code'
-    dim_name = 'dim_city_code'
+    src_name = 'SRC_city_code'
+    dim_name = 'DIM_city_code'
 
     @python_task
     def gcs_to_src():

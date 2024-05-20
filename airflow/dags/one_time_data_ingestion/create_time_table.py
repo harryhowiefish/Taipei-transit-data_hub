@@ -21,6 +21,10 @@ def create_single_year_table(year: int) -> pd.DataFrame:
     date_table['day_of_week'] = date_table['date'].dt.day_of_week
     date_table['day_of_year'] = date_table['date'].dt.day_of_year
 
+    # this is removed for now due to clarification of ISOcalendar
+    # https://pandas.pydata.org/pandas-docs/version/1.5/reference/api/pandas.Series.dt.isocalendar.html#pandas.Series.dt.isocalendar
+    # date_table['week_of_year'] = date_table['date'].dt.isocalendar().week
+
     date_table['weekend'] = date_table['date'].dt.day_of_week.isin([5, 6])
     date_table['weekend'] = np.where(date_table['weekend'], '假日', '平日')
     date_table['year'] = date_table['date'].dt.year
@@ -28,6 +32,7 @@ def create_single_year_table(year: int) -> pd.DataFrame:
     date_table['month'] = date_table['date'].dt.month
     date_table['day'] = date_table['date'].dt.day
     date_table['days_in_month'] = date_table['date'].dt.days_in_month
+
     date_table['day_name_en'] = date_table['date'].dt.day_name()
     # date_table['day_name_zhtw'] = date_table['date'].dt.day_name('zh_TW.utf8')
     date_table['month_name_en'] = date_table['date'].dt.month_name()
