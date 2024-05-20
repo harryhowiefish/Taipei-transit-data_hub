@@ -4,8 +4,8 @@ import os
 import logging
 import pendulum
 
-# BQ_PREFIX = os.environ['BIGQUERY_PREFIX']
-BQ_PREFIX = ''
+BQ_PREFIX = os.environ['BIGQUERY_PREFIX']
+# BQ_PREFIX = ''
 PROJECT_NAME = os.environ['PROJECT_NAME']
 CLIENT = bigquery.Client()
 
