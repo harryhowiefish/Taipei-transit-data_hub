@@ -8,8 +8,8 @@ import os
 import pendulum
 import logging
 
-BQ_PREFIX = os.environ['BIGQUERY_PREFIX']
-# BQ_PREFIX = ''
+# BQ_PREFIX = os.environ['BIGQUERY_PREFIX']
+BQ_PREFIX = ''
 PROJECT_NAME = os.environ['PROJECT_NAME']
 CLIENT = bigquery.Client()
 
@@ -29,13 +29,15 @@ default_args = {
 def etl_city_code():
 
     src_name = 'SRC_city_code'
+    ods_name = 'ODS_city_code'
     dim_name = 'DIM_city_code'
 
     @python_task
     def gcs_to_src():
+        target_dataset = f'{BQ_PREFIX}ETL_SRC'
         job = CLIENT.query(
             f'''
-            CREATE OR REPLACE EXTERNAL TABLE {PROJECT_NAME}.{BQ_PREFIX}ETL_SRC.{src_name} (
+            CREATE OR REPLACE EXTERNAL TABLE {PROJECT_NAME}.{target_dataset}.{src_name} (
             city_code STRING NOT NULL,
             city_name STRING NOT NULL,
             ) OPTIONS (
@@ -52,12 +54,12 @@ def etl_city_code():
         return
 
     @python_task
-    def src_to_dim():
+    def src_to_ods():
         source_dataset = f'{BQ_PREFIX}ETL_SRC'
-        target_dataset = f'{BQ_PREFIX}ETL_DIM'
+        target_dataset = f'{BQ_PREFIX}ETL_ODS'
         job = CLIENT.query(
             f'''
-            CREATE OR REPLACE TABLE {PROJECT_NAME}.{target_dataset}.{dim_name} as (
+            CREATE OR REPLACE TABLE {PROJECT_NAME}.{target_dataset}.{ods_name} as (
             SELECT
                 city_code,city_name
             FROM
@@ -72,7 +74,28 @@ def etl_city_code():
             raise ConnectionRefusedError
         return
 
-    gcs_to_src() >> src_to_dim()
+    @python_task
+    def ods_to_dim():
+        source_dataset = f'{BQ_PREFIX}ETL_ODS'
+        target_dataset = f'{BQ_PREFIX}ETL_DIM'
+        job = CLIENT.query(
+            f'''
+            CREATE OR REPLACE TABLE {PROJECT_NAME}.{target_dataset}.{dim_name} as (
+            SELECT
+                city_code,city_name
+            FROM
+                {PROJECT_NAME}.{source_dataset}.{ods_name}
+
+            )'''  # noqa
+        )
+        while job.done() is False:
+            pass
+        logging.info(job.done(), job.exception())
+        if job.exception():
+            raise ConnectionRefusedError
+        return
+
+    gcs_to_src() >> src_to_ods() >> ods_to_dim()
 
 
 etl_city_code()
