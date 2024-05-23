@@ -32,12 +32,13 @@ def delete_table(dataset_name, table_name, client: bigquery.Client):
 
 
 if __name__ == "__main__":
-    # BIGQUERY_CREDENTIALS_FILE_PATH = r"D:\data_engineer\TIR_group2\TIR101_Group2\secrets\harry_GCS_BigQuery_write_cred.json"
-    BIGQUERY_CREDENTIALS_FILE_PATH = r"C:\TIR101_Group2\secrets\harry_GCS_BigQuery_write_cred.json"
+    BIGQUERY_CREDENTIALS_FILE_PATH = r"D:\data_engineer\TIR_group2\TIR101_Group2\secrets\harry_GCS_BigQuery_write_cred.json"
+    # BIGQUERY_CREDENTIALS_FILE_PATH = r"C:\TIR101_Group2\secrets\harry_GCS_BigQuery_write_cred.json"
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = BIGQUERY_CREDENTIALS_FILE_PATH
     BQ_CLIENT = bigquery.Client()
-    create_dataset(dataset_name="ANDY_ETL_SRC", client=BQ_CLIENT)
-    create_dataset(dataset_name="ANDY_ETL_ODS", client=BQ_CLIENT)
-    create_dataset(dataset_name="ANDY_ETL_FACT", client=BQ_CLIENT)
-    create_dataset(dataset_name="ANDY_ETL_DIM", client=BQ_CLIENT)
+    # create_dataset(dataset_name="ANDY_ETL_SRC", client=BQ_CLIENT)
+    # create_dataset(dataset_name="ANDY_ETL_ODS", client=BQ_CLIENT)
+    # create_dataset(dataset_name="ANDY_ETL_FACT", client=BQ_CLIENT)
+    # create_dataset(dataset_name="ANDY_ETL_DIM", client=BQ_CLIENT)
+    create_dataset(dataset_name="ANDY_ETL_MART", client=BQ_CLIENT)
     # delete_dataset("create_test")
