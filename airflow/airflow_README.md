@@ -4,6 +4,19 @@ docker-compose up airflow-init
 docker-compose up -d 
 ```
 
+如果要讓email可以發送
+需要設定把airflow.cfg.example複製一份，改名為airflow.cfg並更改以下設定
+
+smtp_host = smtp.gmail.com
+smtp_user = <你的email>
+smtp_password = <密碼>
+smtp_port = 587
+smtp_mail_from = <你的email>
+
+密碼請不要用你個人的密碼，請設定app passwords
+https://support.google.com/mail/answer/185833?hl=en
+
+
 到localhost:8000
 帳密都是airflow
 
