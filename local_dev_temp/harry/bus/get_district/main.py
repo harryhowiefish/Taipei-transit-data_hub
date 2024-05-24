@@ -41,8 +41,7 @@ def get_district(request):
 
     lat = request_json['lat']
     lng = request_json['lng']
-    reverse_geocoding_url = f'https://maps.googleapis.com/maps/api/geocode/json?latlng={
-        lat},{lng}&key={API_KEY}&language=zh-TW'
+    reverse_geocoding_url = f'https://maps.googleapis.com/maps/api/geocode/json?latlng={lat},{lng}&key={API_KEY}&language=zh-TW'  # noqa
     try:
         response = requests.get(reverse_geocoding_url)
         data = response.json()
