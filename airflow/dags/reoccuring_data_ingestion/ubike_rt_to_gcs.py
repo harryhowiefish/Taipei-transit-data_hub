@@ -7,6 +7,7 @@ import logging
 import pendulum
 from utils.gcp import gcs
 import os
+from utils.discord import Simple_DC_Notifier
 
 # get variables/infomation from enviornment (secrets or settings)
 BUCKET_TYPE = os.environ['BUCKET_TYPE']
@@ -26,6 +27,7 @@ default_args = {
     default_args=default_args,
     schedule_interval='*/10 * * * *',
     start_date=datetime(2024, 4, 10),
+    on_success_callback=Simple_DC_Notifier('✅ success!'),
     tags=["reoccuring", "data_ingestion"],
     catchup=False)
 def ubike_rt_to_gcs():
