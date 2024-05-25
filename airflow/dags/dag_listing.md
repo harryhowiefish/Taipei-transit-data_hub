@@ -16,9 +16,9 @@
     - [ ] daily_email_data_check
 - bike_mapping_gsheet
   - one time
-    - [ ] bike_mapping_gsheet_create_external_table
+    - [x] bike_mapping_gsheet_create_external_table
   - reoccuring
-    - [ ] bike_mapping_gsheet_src_ods_dim
+    - [x] bike_mapping_gsheet_src_ods
 
 ### Bus related DAGs
 - bus station
