@@ -8,8 +8,8 @@ import os
 import pendulum
 import logging
 
-# BQ_PREFIX = os.environ['BIGQUERY_PREFIX']
-BQ_PREFIX = ''
+BQ_PREFIX = os.environ['BIGQUERY_PREFIX']
+# BQ_PREFIX = ''
 PROJECT_NAME = os.environ['PROJECT_NAME']
 CLIENT = bigquery.Client()
 
@@ -26,32 +26,11 @@ default_args = {
     start_date=pendulum.today(tz='Asia/Taipei'),
     tags=['one_time_ETL']
 )
-def etl_city_code():
+def city_code_src_dim():
 
     src_name = 'SRC_city_code'
     ods_name = 'ODS_city_code'
     dim_name = 'DIM_city_code'
-
-    @python_task
-    def gcs_to_src():
-        target_dataset = f'{BQ_PREFIX}ETL_SRC'
-        job = CLIENT.query(
-            f'''
-            CREATE OR REPLACE EXTERNAL TABLE {PROJECT_NAME}.{target_dataset}.{src_name} (
-            city_code STRING NOT NULL,
-            city_name STRING NOT NULL,
-            ) OPTIONS (
-                format = 'CSV',
-                uris = ['gs://static_reference/additional_references/city_code.csv'],
-                skip_leading_rows = 1);
-                '''  # noqa
-        )
-        while job.done() is False:
-            pass
-        logging.info(job.done(), job.exception())
-        if job.exception():
-            raise ConnectionRefusedError
-        return
 
     @python_task
     def src_to_ods():
@@ -95,7 +74,7 @@ def etl_city_code():
             raise ConnectionRefusedError
         return
 
-    gcs_to_src() >> src_to_ods() >> ods_to_dim()
+    src_to_ods() >> ods_to_dim()
 
 
-etl_city_code()
+city_code_src_dim()

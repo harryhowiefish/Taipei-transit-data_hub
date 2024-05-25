@@ -47,8 +47,8 @@
     - [ ] calc_distance_to_gcs
     - [ ] calc_distance_create_external_table
     - [ ] calc_distance_src_ods_dim
-    - [ ] city_code_create_external_table
-    - [ ] city_code_src_dim
+    - [x] city_code_create_external_table
+    - [x] city_code_src_dim
   -  reoccuring
     - [x] create_time_table_to_gcs
     - [x] time_table_reoccuring_src_ods_dim
