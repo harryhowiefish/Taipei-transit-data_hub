@@ -7,6 +7,7 @@ from utils.gcp import gcs
 import os
 from pendulum.datetime import DateTime
 import pendulum
+from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 
 
 BUCKET_TYPE = os.environ['BUCKET_TYPE']
@@ -16,7 +17,7 @@ def create_single_year_table(year: int) -> pd.DataFrame:
     date_table = pd.DataFrame(
         pd.date_range(
             datetime.date(year, 1, 1),
-            datetime.date(year + 1, 12, 31)),
+            datetime.date(year, 12, 31)),
         columns=['date'])
     date_table['day_of_week'] = date_table['date'].dt.day_of_week
     date_table['day_of_year'] = date_table['date'].dt.day_of_year
@@ -48,11 +49,11 @@ default_args = {
 @dag(
     default_args=default_args,
     schedule='0 0 25 12 *',
-    start_date=pendulum.datetime(2018, 1, 1, tz='Asia/Taipei'),
-    tags=['one_time_data_ingestion'],
+    start_date=pendulum.datetime(2017, 1, 1, tz='Asia/Taipei'),
+    tags=['other', 'reoccuring'],
     catchup=True
 )
-def create_time_table():
+def create_time_table_to_gcs():
 
     @python_task
     def print_execution_date(execution_date=None):
@@ -60,9 +61,9 @@ def create_time_table():
 
     @python_task
     def create_dataframes(execution_date: DateTime = None) -> dict:
-        next_year = execution_date.add(years=1).year
-        df = create_single_year_table(next_year)
-        data = {'year': next_year, 'data': df}
+        target_year = execution_date.add(years=2).year
+        df = create_single_year_table(target_year)
+        data = {'year': target_year, 'data': df}
         return data
 
     @python_task
@@ -74,9 +75,15 @@ def create_time_table():
                              df=data['data'])
         return
 
+    trigger = TriggerDagRunOperator(
+        task_id="trigger_etl",
+        # Ensure this equals the dag_id of the DAG to trigger
+        trigger_dag_id="time_table_reoccuring_src_ods_dim",
+    )
+
     df = create_dataframes()
-    save_to_gcs(df)
     print_execution_date() >> df
+    save_to_gcs(df) >> trigger
 
 
-create_time_table()
+create_time_table_to_gcs()
