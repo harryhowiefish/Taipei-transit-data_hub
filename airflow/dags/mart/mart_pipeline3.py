@@ -17,8 +17,9 @@ default_args = {
 }
 
 
-@dag(default_args=default_args, schedule='@once',
-     start_date=pendulum.today(tz='Asia/Taipei'), tags=['MART'])
+@dag(default_args=default_args, schedule='@daily',
+     start_date=pendulum.today(tz='Asia/Taipei'),
+     tags=['other', 'reocurring'])
 def mart_pipeline_3():
 
     @python_task
