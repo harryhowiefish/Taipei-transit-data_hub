@@ -32,7 +32,7 @@ default_args = {
     default_args=default_args,
     schedule='@once',
     start_date=pendulum.today(tz='Asia/Taipei'),
-    tags=['reoccurring_ETL']
+    tags=['bike', 'one_time']
 )
 def bike_mapping_gsheet_create_external_table():
     src_dataset = f'{BQ_PREFIX}ETL_SRC'

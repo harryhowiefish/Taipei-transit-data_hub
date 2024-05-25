@@ -32,7 +32,7 @@ default_args = {
     default_args=default_args,
     schedule='@daily',
     start_date=pendulum.today(tz='Asia/Taipei'),
-    tags=['reoccurring_ETL']
+    tags=['bike', 'reoccuring']
 )
 def bike_mapping_gsheet_src_ods():
     src_dataset = f'{BQ_PREFIX}ETL_SRC'
