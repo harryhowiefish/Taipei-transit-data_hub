@@ -1,20 +1,18 @@
 ### Bus related DAGs
-- history
+- bike - history
   - one time
-    - [ ] bike_history_backlog_to_gcs
-    - [ ] bike_history_create_external_table
-    - [ ] bike_history_backlog_src_ods_fact
+    - [x] bike_history_create_external_table
   - reoccuring
-    - [ ] bike_history_to_gcs (include checking)
-    - [ ] bike_history_recoccuring_src_ods_fact
-- realtime
+    - [x] bike_history_to_gcs
+    - [x] bike_history_recoccuring_src_ods_fact
+- bike - realtime
   - one time
     - [ ] bike_realtime_create_external_table
   - reoccuring
     - [ ] bike_realtime_to_gcs
     - [ ] bike_realtime_recoccuring_src_ods_fact
     - [ ] daily_email_data_check
-- bike_mapping_gsheet
+- bike - bike_mapping_gsheet
   - one time
     - [x] bike_mapping_gsheet_create_external_table
   - reoccuring

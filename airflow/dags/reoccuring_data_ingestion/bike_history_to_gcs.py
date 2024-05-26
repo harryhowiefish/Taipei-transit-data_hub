@@ -3,22 +3,25 @@ from io import BytesIO
 import zipfile
 import requests
 import pandas as pd
-from airflow.decorators import dag, python_task
+from airflow.decorators import dag, python_task, branch_python
 from google.cloud import storage
 from utils.gcp import gcs
 import re
 import os
 import pendulum
 import logging
+from airflow.operators.trigger_dagrun import TriggerDagRunOperator
+
 
 CLIENT = storage.Client()
 BUCKET_TYPE = os.environ['BUCKET_TYPE']
 # BUCKET_TYPE = ''
+
 # these are some common arguments for dags
 default_args = {
     'owner': 'TIR101_G2',
-    'retries': 1,
-    'retry_delay': timedelta(seconds=30)
+    'retries': 2,
+    'retry_delay': timedelta(minutes=1)
 }
 
 
@@ -27,7 +30,7 @@ default_args = {
     default_args=default_args,
     schedule_interval='0 0 1 * *',  # run first day of every month
     start_date=pendulum.datetime(2024, 3, 10, tz='Asia/Taipei'),
-    tags=["reoccuring", "data_ingestion"],
+    tags=["bike", "reoccuring"],
     catchup=False)
 def bike_history_to_gcs():
 
@@ -45,11 +48,23 @@ def bike_history_to_gcs():
             prefix='bike_history')]
         return {'filenames': file_list}
 
-    @python_task
-    def get_most_recent_file_date(data) -> dict:
-        dates = []
+    @branch_python.branch_task
+    def new_ingestion_check(data):
+        '''
+        check if there are existing historical data.
+        '''
         file_list = data['filenames']
+        if len(file_list) == 0:
+            return 'extract_all_data'
+        else:
+            return 'get_most_recent_file_date'
+
+    @python_task
+    def get_most_recent_file_date(ti=None) -> dict:
+        file_list = ti.xcom_pull(task_ids='list_history_files_in_gcs')[
+            'filenames']
         print(file_list)
+        dates = []
         for file_name in file_list:
             match = re.search(r'year=(\d+)/month=(\d+)', file_name)
             if match:
@@ -64,13 +79,17 @@ def bike_history_to_gcs():
                 'month': most_recent_month}
 
     @python_task
-    def extract_new_rows(df, target_date) -> list[str]:
-        target_year = target_date['year']
-        target_month = target_date['month']
+    def extract_new_rows(df, target_date=None) -> list[str]:
         df['year'] = df['fileinfo'].apply(
             lambda x: int(re.search(r'(\d{4})年', x).group(1)))
         df['month'] = df['fileinfo'].apply(
             lambda x: int(re.search(r'(\d{1,2})月', x).group(1)))
+
+        if target_date is None:
+            return df[['fileURL', 'year', 'month']].to_dict(orient='records')
+
+        target_year = target_date['year']
+        target_month = target_date['month']
 
         def is_larger_than(row, target_year, target_month):
             current_year = row['year']
@@ -131,11 +150,24 @@ def bike_history_to_gcs():
                              transform_df.reset_index())
         return
 
-    full_df = get_data_listing()
+    trigger = TriggerDagRunOperator(
+        task_id="trigger_etl",
+        # Ensure this equals the dag_id of the DAG to trigger
+        trigger_dag_id="bike_history_recoccuring_src_ods_fact",
+        trigger_rule='one_success'
+    )
+
     file_listing = list_history_files_in_gcs()
-    newest_date = get_most_recent_file_date(file_listing)
+    full_df = get_data_listing()
+    newest_date = get_most_recent_file_date()
+    no_filter_df = extract_new_rows.override(
+        task_id='extract_all_data')(full_df, None)
+    new_ingestion_check(file_listing) >> [no_filter_df, newest_date]
     extracted_df = extract_new_rows(full_df, newest_date)
-    zip_url_to_gcs.expand(data=extracted_df)
+    zip_url_to_gcs.override(
+        task_id='unzip_all_url').expand(data=no_filter_df) >> trigger
+    zip_url_to_gcs.override(
+        task_id='unzip_selected_url').expand(data=extracted_df) >> trigger
 
 
 bike_history_to_gcs()
