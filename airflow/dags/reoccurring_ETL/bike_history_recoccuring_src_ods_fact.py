@@ -30,6 +30,7 @@ def bike_history_recoccuring_src_ods_fact():
     src_name = 'SRC_bike_history'
     ods_name = 'ODS_bike_history'
     fact_name = 'FACT_bike_history'
+    mapping_name = 'ODS_bike_station_mapping'
 
     @branch_python.branch_task
     def check_if_bike_history_fact_exist():
@@ -82,10 +83,10 @@ def bike_history_recoccuring_src_ods_fact():
                     require_partition_filter = FALSE
                 ) AS (
                 SELECT
-                    rent_station,
+                    t2.station_name as rent_station,
                     EXTRACT(DATE FROM rent_time) as rent_date,
                     EXTRACT(HOUR FROM rent_time) as rent_hour,
-                    return_station,
+                    t3.station_name as return_station,
                     EXTRACT(DATE FROM return_time) as return_date,
                     EXTRACT(HOUR FROM return_time) as return_hour,
                     (CAST(split(rent ,':')[0] as integer)*60*60+
@@ -95,7 +96,11 @@ def bike_history_recoccuring_src_ods_fact():
                     create_time,
                     year,
                     month
-                FROM `{PROJECT_NAME}.{ods_dataset}.{ods_name}`
+                FROM `{PROJECT_NAME}.{ods_dataset}.{ods_name}` t1
+                inner join `{PROJECT_NAME}.{ods_dataset}.{mapping_name}` t2
+                on t1.rent_station = t2.history
+                inner join `{PROJECT_NAME}.{ods_dataset}.{mapping_name}` t3
+                on t1.return_station = t3.history
                 );
                 """  # noqa
         )
