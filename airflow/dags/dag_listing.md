@@ -22,12 +22,13 @@
 ### Bus related DAGs
 - bus station
   - one time
-    - [ ] bus_station_to_gcs
-    - [ ] bus_station_geocoding
-    - [ ] bus_station_create_external_table
-    - [ ] bus_station_src_ods_dim
+    - [x] bus_station_to_gcs
+    - [x] bus_station_create_external_table
+    - [x] bus_station_geocode_create_external_table
+    - [x] bus_station_src_ods_dim
   - reoccuring
-    - [ ] new_bus_station_checker
+    - [x] new_bus_station_checker
+  
 ### mrt related DAGs
 - bus station
   - one time
@@ -41,6 +42,7 @@
     - [ ] new_mrt_station_checker (Monday)
     - [ ] mrt_traffic_hist_reoccuring_to_gcs (pending)
     - [ ] mrt_traffic_hist_reoccuring_src_ods_fact (pending)
+
 ### other DAGs
 - other
   - one time
