@@ -97,10 +97,10 @@ def bike_history_recoccuring_src_ods_fact():
                     year,
                     month
                 FROM `{PROJECT_NAME}.{ods_dataset}.{ods_name}` t1
-                inner join `{PROJECT_NAME}.{ods_dataset}.{mapping_name}` t2
-                on t1.rent_station = t2.history
-                inner join `{PROJECT_NAME}.{ods_dataset}.{mapping_name}` t3
-                on t1.return_station = t3.history
+                INNER JOIN `{PROJECT_NAME}.{ods_dataset}.{mapping_name}` t2
+                ON t1.rent_station = t2.history
+                INNER JOIN `{PROJECT_NAME}.{ods_dataset}.{mapping_name}` t3
+                ON t1.return_station = t3.history
                 );
                 """  # noqa
         )
@@ -140,8 +140,8 @@ def bike_history_recoccuring_src_ods_fact():
                 month,
             FROM
                 {PROJECT_NAME}.{src_dataset}.{src_name}
-            where year > extract(year from DATE('{date}')) or 
-            (year = extract(year from DATE('{date}')) and month > extract(month from DATE('{date}')))
+            WHERE year > extract(year from DATE('{date}')) or 
+            (year = EXTRACT(year from DATE('{date}')) and month > EXTRACT(month from DATE('{date}')))
             )'''  # noqa
         )
         while job.done() is False:
@@ -159,10 +159,10 @@ def bike_history_recoccuring_src_ods_fact():
             f'''
             INSERT INTO `{PROJECT_NAME}.{fact_dataset}.{fact_name}` (
             SELECT
-                rent_station,
+                t2.station_name as rent_station,
                 EXTRACT(DATE FROM rent_time) as rent_date,
                 EXTRACT(HOUR FROM rent_time) as rent_hour,
-                return_station,
+                t3.station_name as return_station,
                 EXTRACT(DATE FROM return_time) as return_date,
                 EXTRACT(HOUR FROM return_time) as return_hour,
                 (CAST(split(rent ,':')[0] as integer)*60*60+
@@ -173,8 +173,12 @@ def bike_history_recoccuring_src_ods_fact():
                 year,
                 month
             FROM
-                {PROJECT_NAME}.{ods_dataset}.{ods_name}
-            where source_date > DATE('{date}')
+                (SELECT * FROM {PROJECT_NAME}.{ods_dataset}.{ods_name}
+            WHERE source_date > DATE('{date}')) as t1
+            INNER JOIN `{PROJECT_NAME}.{ods_dataset}.{mapping_name}` t2
+            ON t1.rent_station = t2.history
+            INNER JOIN `{PROJECT_NAME}.{ods_dataset}.{mapping_name}` t3
+            ON t1.return_station = t3.history
             )'''  # noqa
         )
         while job.done() is False:
