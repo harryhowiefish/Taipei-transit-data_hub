@@ -18,7 +18,7 @@ default_args = {
     default_args=default_args,
     schedule='0 2 * * *',
     start_date=pendulum.datetime(2024, 3, 17, tz='Asia/Taipei'),
-    tags=['other'],
+    tags=['bike', 'reoccuring'],
     catchup=True
 )
 def daily_ingestion_summary():

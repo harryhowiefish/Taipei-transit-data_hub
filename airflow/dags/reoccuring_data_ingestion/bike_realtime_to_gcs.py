@@ -11,7 +11,7 @@ from utils.discord import Simple_DC_Notifier
 
 # get variables/infomation from enviornment (secrets or settings)
 BUCKET_TYPE = os.environ['BUCKET_TYPE']
-
+# BUCKET_TYPE = ''
 
 # these are some common arguments for dags
 default_args = {
@@ -30,7 +30,7 @@ default_args = {
     on_success_callback=Simple_DC_Notifier('✅ success!'),
     tags=["reoccuring", "data_ingestion"],
     catchup=False)
-def ubike_rt_to_gcs():
+def bike_realtime_to_gcs():
     # setup the client that will be use in the dags
     gcs_client = storage.Client()
 
@@ -58,4 +58,4 @@ def ubike_rt_to_gcs():
 
 
 # this actually runs the whole DAG
-ubike_rt_to_gcs()
+bike_realtime_to_gcs()

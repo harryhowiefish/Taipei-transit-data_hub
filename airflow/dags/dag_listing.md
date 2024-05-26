@@ -8,11 +8,11 @@
 - bike - realtime
   - one time
     - [x] bike_realtime_create_external_tables
-    - [ ] bike_realtime_create_ods_fact
+    - [x] bike_realtime_create_ods_fact
   - reoccuring
     - [x] bike_realtime_to_gcs
-    - [ ] bike_realtime_recoccuring_src_ods_fact
-    - [ ] daily_email_data_check
+    - [x] bike_realtime_recoccuring_src_ods_fact
+    - [x] daily_ingestion_summary
 - bike - bike_mapping_gsheet
   - one time
     - [x] bike_mapping_gsheet_create_external_table
@@ -23,6 +23,7 @@
 - bus station
   - one time
     - [ ] bus_station_to_gcs
+    - [ ] bus_station_geocoding
     - [ ] bus_station_create_external_table
     - [ ] bus_station_src_ods_dim
   - reoccuring
@@ -30,15 +31,16 @@
 ### mrt related DAGs
 - bus station
   - one time
-    - [ ] mrt_station_to_gcs (later)
-    - [ ] mrt_station_create_external_table (later)
-    - [ ] mrt_station_src_ods_dim (later)
-    - [ ] mrt_traffic_hist_backlog_to_gcs
-    - [ ] mrt_traffic_hist_backlog_src_ods_fact
+    - [ ] mrt_station_to_gcs (Monday)
+    - [ ] mrt_station_create_external_table (Monday)
+    - [ ] mrt_station_src_ods_dim (Monday)
+    - [ ] mrt_traffic_hist_backlog_to_gcs (pending)
+    - [ ] mrt_traffic_hist_create_external_table (pending)
+    - [ ] mrt_traffic_hist_backlog_src_ods_fact (pending)
   - reoccuring
-    - [ ] new_mrt_station_checker (later)
-    - [ ] mrt_traffic_hist_reoccuring_to_gcs
-    - [ ] mrt_traffic_hist_reoccuring_src_ods_fact
+    - [ ] new_mrt_station_checker (Monday)
+    - [ ] mrt_traffic_hist_reoccuring_to_gcs (pending)
+    - [ ] mrt_traffic_hist_reoccuring_src_ods_fact (pending)
 ### other DAGs
 - other
   - one time
