@@ -31,18 +31,20 @@ def city_code_src_dim():
     src_name = 'SRC_city_code'
     ods_name = 'ODS_city_code'
     dim_name = 'DIM_city_code'
+    src_dataset = f'{BQ_PREFIX}ETL_SRC'
+    ods_dataset = f'{BQ_PREFIX}ETL_ODS'
+    dim_dataset = f'{BQ_PREFIX}ETL_DIM'
 
     @python_task
     def src_to_ods():
-        source_dataset = f'{BQ_PREFIX}ETL_SRC'
-        target_dataset = f'{BQ_PREFIX}ETL_ODS'
+
         job = CLIENT.query(
             f'''
-            CREATE OR REPLACE TABLE {PROJECT_NAME}.{target_dataset}.{ods_name} as (
+            CREATE OR REPLACE TABLE {PROJECT_NAME}.{ods_dataset}.{ods_name} as (
             SELECT
                 city_code,city_name
             FROM
-                {PROJECT_NAME}.{source_dataset}.{src_name}
+                {PROJECT_NAME}.{src_dataset}.{src_name}
 
             )'''  # noqa
         )
@@ -55,15 +57,13 @@ def city_code_src_dim():
 
     @python_task
     def ods_to_dim():
-        source_dataset = f'{BQ_PREFIX}ETL_ODS'
-        target_dataset = f'{BQ_PREFIX}ETL_DIM'
         job = CLIENT.query(
             f'''
-            CREATE OR REPLACE TABLE {PROJECT_NAME}.{target_dataset}.{dim_name} as (
+            CREATE OR REPLACE TABLE {PROJECT_NAME}.{dim_dataset}.{dim_name} as (
             SELECT
                 city_code,city_name
             FROM
-                {PROJECT_NAME}.{source_dataset}.{ods_name}
+                {PROJECT_NAME}.{ods_dataset}.{ods_name}
 
             )'''  # noqa
         )
