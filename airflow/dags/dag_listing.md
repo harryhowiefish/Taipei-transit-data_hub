@@ -7,9 +7,10 @@
     - [x] bike_history_recoccuring_src_ods_fact
 - bike - realtime
   - one time
-    - [ ] bike_realtime_create_external_table
+    - [x] bike_realtime_create_external_tables
+    - [ ] bike_realtime_create_ods_fact
   - reoccuring
-    - [ ] bike_realtime_to_gcs
+    - [x] bike_realtime_to_gcs
     - [ ] bike_realtime_recoccuring_src_ods_fact
     - [ ] daily_email_data_check
 - bike - bike_mapping_gsheet
@@ -29,22 +30,20 @@
 ### mrt related DAGs
 - bus station
   - one time
-    - [ ] mrt_station_to_gcs
-    - [ ] mrt_station_create_external_table
-    - [ ] mrt_station_src_ods_dim
+    - [ ] mrt_station_to_gcs (later)
+    - [ ] mrt_station_create_external_table (later)
+    - [ ] mrt_station_src_ods_dim (later)
     - [ ] mrt_traffic_hist_backlog_to_gcs
     - [ ] mrt_traffic_hist_backlog_src_ods_fact
   - reoccuring
-    - [ ] new_mrt_station_checker
+    - [ ] new_mrt_station_checker (later)
     - [ ] mrt_traffic_hist_reoccuring_to_gcs
     - [ ] mrt_traffic_hist_reoccuring_src_ods_fact
 ### other DAGs
 - other
   - one time
     - [x] time_table_create_external_table
-    - [ ] calc_distance_to_gcs
-    - [ ] calc_distance_create_external_table
-    - [ ] calc_distance_src_ods_dim
+    - [x] calc_distance_to_dim
     - [x] city_code_create_external_table
     - [x] city_code_src_dim
   -  reoccuring
