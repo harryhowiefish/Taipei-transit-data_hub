@@ -1,7 +1,13 @@
 先跑CLI
+
+```
+cd airflow
+```
+
 ```
 docker-compose up airflow-init
 docker-compose up -d 
+docker-compose down
 ```
 
 如果要讓email可以發送
