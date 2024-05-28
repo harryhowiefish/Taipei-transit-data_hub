@@ -5,7 +5,7 @@ from utils.gcp import gcs, bq
 import os
 import pendulum
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
-from utils.etl import tdx
+from airflow.utils import tdx
 import requests
 import logging
 import json

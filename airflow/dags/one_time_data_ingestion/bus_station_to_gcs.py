@@ -4,7 +4,7 @@ from airflow.decorators import dag, python_task
 from utils.gcp import gcs
 import os
 import pendulum
-from utils.etl import tdx
+from airflow.utils import tdx
 
 BUCKET_TYPE = os.environ['BUCKET_TYPE']
 
