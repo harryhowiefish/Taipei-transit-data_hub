@@ -34,12 +34,12 @@
   - one time
     - [x] mrt_station_to_gcs 
     - [x] mrt_station_create_external_table 
-    - [x] mrt_station_src_ods_dim (Monday)
+    - [x] mrt_station_src_ods_dim
     - [ ] mrt_traffic_hist_backlog_to_gcs (pending)
     - [ ] mrt_traffic_hist_create_external_table (pending)
     - [ ] mrt_traffic_hist_backlog_src_ods_fact (pending)
   - reoccuring
-    - [x] new_mrt_station_checker (Monday)
+    - [x] new_mrt_station_checker
     - [ ] mrt_traffic_hist_reoccuring_to_gcs (pending)
     - [ ] mrt_traffic_hist_reoccuring_src_ods_fact (pending)
 
