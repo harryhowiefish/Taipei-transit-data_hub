@@ -157,3 +157,4 @@ gcp_creds/gcp_credentials.json
 *.json
 harry_personal_ipynb/
 laura_personal_noted/
+airflow/config/airflow.cfg

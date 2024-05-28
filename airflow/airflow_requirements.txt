@@ -5,3 +5,4 @@ google-cloud-storage==2.16.0
 google-cloud-bigquery==3.22.0
 db-dtypes==1.2.0
 PyMySQL==1.1.0
+geopy==2.4.1
