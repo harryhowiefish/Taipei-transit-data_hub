@@ -44,7 +44,7 @@ def bus_rt_to_gcs():
 
         # set up the required names for inserting the data into GCS
         now = pendulum.now('Asia/Taipei').format("MM_DD_YYYY/HH_mm")
-        bucket_name = f"{BUCKET_TYPE}_bus_realtime"
+        bucket_name = f"{BUCKET_TYPE}bus_realtime"
         filename = f'frequency/dt={now}.csv'
 
         # inserting the file into GCS
@@ -61,7 +61,7 @@ def bus_rt_to_gcs():
 
         # set up the required names for inserting the data into GCS
         now = pendulum.now('Asia/Taipei').format("MM_DD_YYYY/HH_mm")
-        bucket_name = f"{BUCKET_TYPE}_bus_realtime"
+        bucket_name = f"{BUCKET_TYPE}bus_realtime"
         filename = f'nearstop/dt={now}.csv'
 
         # inserting the file into GCS
@@ -79,7 +79,7 @@ def bus_rt_to_gcs():
 
         # set up the required names for inserting the data into GCS
         now = pendulum.now('Asia/Taipei').format("MM_DD_YYYY/HH_mm")
-        bucket_name = f"{BUCKET_TYPE}_bus_realtime"
+        bucket_name = f"{BUCKET_TYPE}bus_realtime"
         filename = f'estimate_arrival/dt={now}.csv'
 
         # inserting the file into GCS

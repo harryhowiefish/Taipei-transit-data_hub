@@ -62,7 +62,7 @@ def mrt_rt_to_gcs():
 
         # set up the required names for inserting the data into GCS
         now = pendulum.now('Asia/Taipei').format("MM_DD_YYYY/HH_mm")
-        bucket_name = f"{BUCKET_TYPE}_mrt_realtime"
+        bucket_name = f"{BUCKET_TYPE}mrt_realtime"
         filename = f'crowded/blue/dt={now}.csv'
 
         # inserting the file into GCS
@@ -96,7 +96,7 @@ def mrt_rt_to_gcs():
 
         # set up the required names for inserting the data into GCS
         now = pendulum.now('Asia/Taipei').format("MM_DD_YYYY/HH_mm")
-        bucket_name = f"{BUCKET_TYPE}_mrt_realtime"
+        bucket_name = f"{BUCKET_TYPE}mrt_realtime"
         filename = f'crowded/others/dt={now}.csv'
 
         # inserting the file into GCS
@@ -132,7 +132,7 @@ def mrt_rt_to_gcs():
 
         # set up the required names for inserting the data into GCS
         now = pendulum.now('Asia/Taipei').format("MM_DD_YYYY/HH_mm")
-        bucket_name = f"{BUCKET_TYPE}_mrt_realtime"
+        bucket_name = f"{BUCKET_TYPE}mrt_realtime"
         filename = f'crowded/brown/dt={now}.csv'
 
         # inserting the file into GCS
@@ -167,7 +167,7 @@ def mrt_rt_to_gcs():
 
         # set up the required names for inserting the data into GCS
         now = pendulum.now('Asia/Taipei').format("MM_DD_YYYY/HH_mm")
-        bucket_name = f"{BUCKET_TYPE}_mrt_realtime"
+        bucket_name = f"{BUCKET_TYPE}mrt_realtime"
         filename = f'arrival/dt={now}.csv'
 
         # inserting the file into GCS
