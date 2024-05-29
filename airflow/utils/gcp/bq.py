@@ -49,8 +49,7 @@ def build_bq_from_gcs(
             external_config = bigquery.ExternalConfig("JSONL")
         else:
             raise ValueError(
-                f"Invalid filetype: {
-                    filetype}. Please specify 'parquet' or 'csv' or 'jsonl'."
+                f"Invalid filetype: {filetype}. Please specify 'parquet' or 'csv' or 'jsonl'."  # noqa
             )
         external_config.source_uris = [f"gs://{bucket_name}/{blob_name}"]
         if schema:
@@ -145,8 +144,7 @@ def upload_df_to_bq(
         job_config.source_format = bigquery.SourceFormat.JSONL
     else:
         raise ValueError(
-            f"Invalid filetype: {
-                filetype}. Please specify 'parquet' or 'csv' or 'jsonl'."
+            f"Invalid filetype: {filetype}. Please specify 'parquet' or 'csv' or 'jsonl'."  # noqa
         )
     if schema:
         job_config.schema = schema

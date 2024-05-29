@@ -7,6 +7,22 @@
 
 ## 資料量
 
+## setup
+
+### run Airflow
+```
+cd airflow
+docker-compose up airflow-init
+docker-compose up -d
+```
+
+### Use utils outside of airflow 
+(e for editable)
+```
+cd airflow
+pip install -e airflow
+
+```
 
 ## Contributor 
 In alphabetical order:

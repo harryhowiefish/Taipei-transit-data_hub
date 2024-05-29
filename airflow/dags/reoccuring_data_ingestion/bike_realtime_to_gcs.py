@@ -7,10 +7,11 @@ import logging
 import pendulum
 from utils.gcp import gcs
 import os
+from utils.discord import Simple_DC_Notifier
 
 # get variables/infomation from enviornment (secrets or settings)
 BUCKET_TYPE = os.environ['BUCKET_TYPE']
-
+# BUCKET_TYPE = ''
 
 # these are some common arguments for dags
 default_args = {
@@ -26,9 +27,10 @@ default_args = {
     default_args=default_args,
     schedule_interval='*/10 * * * *',
     start_date=datetime(2024, 4, 10),
+    on_success_callback=Simple_DC_Notifier('✅ success!'),
     tags=["reoccuring", "data_ingestion"],
     catchup=False)
-def ubike_rt_to_gcs():
+def bike_realtime_to_gcs():
     # setup the client that will be use in the dags
     gcs_client = storage.Client()
 
@@ -42,7 +44,7 @@ def ubike_rt_to_gcs():
 
         # set up the required names for inserting the data into GCS
         now = pendulum.now('Asia/Taipei').format("MM_DD_YYYY/HH_mm")
-        bucket_name = f"{BUCKET_TYPE}_youbike_realtime"
+        bucket_name = f"{BUCKET_TYPE}youbike_realtime"
         filename = f'dt={now}.csv'
 
         # inserting the file into GCS
@@ -56,4 +58,4 @@ def ubike_rt_to_gcs():
 
 
 # this actually runs the whole DAG
-ubike_rt_to_gcs()
+bike_realtime_to_gcs()
