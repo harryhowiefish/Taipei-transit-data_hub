@@ -151,10 +151,8 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 airflow/logs/*
-gcp_credentials/*
-gcp_creds/gcp_credentials.json
+airflow/gcp_credentials/*
 *.csv
 *.json
-harry_personal_ipynb/
-laura_personal_noted/
+notebooks/
 airflow/config/airflow.cfg
