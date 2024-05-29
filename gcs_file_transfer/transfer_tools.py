@@ -43,7 +43,7 @@ class GCS_to_GCS():
             The location for the new buckets, by default 'asia-east1'.
         """
         self.suffix = suffix
-        self.gcs_location = location
+        self.location = location
         print(f'setting updated, new buckets will have the suffix: {suffix}')
 
     def duplicate_buckets_in_dest(self,
@@ -67,7 +67,7 @@ class GCS_to_GCS():
         NotFound
             If a specified bucket name does not exist in the source project.
         """
-        if self.suffix is None or self.gcs_location is None:
+        if self.suffix is None or self.location is None:
             ReferenceError('please run init_dest_bucket_setting first!')
 
         create_count = 0
