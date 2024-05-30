@@ -1,3 +1,6 @@
+from utils.gcp import gcs
+from utils.discord_notifications import DiscordNotifier
+from dotenv import load_dotenv
 from datetime import timedelta, datetime
 from airflow.decorators import dag, python_task
 from google.cloud import storage
@@ -5,10 +8,13 @@ import requests
 import pandas as pd
 import logging
 import pendulum
-from utils.gcp import gcs
 import os
-from utils.discord_notifications import DiscordNotifier
-from dotenv import load_dotenv
+from pathlib import Path
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent / "/opt/airflow/utils"))
+
+
+# 添加 utils 模組到 Python 路徑
 
 load_dotenv()
 discord_conn_id = os.getenv("discord_webhook")
@@ -40,9 +46,9 @@ def notify_failure(context):
 
 @dag(
     # basic setting for all dags
-    dag_id='ubike_rt_to_gcs',
+    dag_id='youbike_up_load_to_gcs',
     default_args=default_args,
-    schedule_interval='*/10 * * * *',
+    schedule_interval='*/3 * * * *',
     start_date=datetime(2024, 4, 10),
     tags=["reoccuring", "data_ingestion"],
     on_success_callback=notify_success,  # 在 DAG 成功時調用
@@ -50,6 +56,7 @@ def notify_failure(context):
     catchup=False)
 def bike_realtime_to_gcs():
     # setup the client that will be use in the dags
+
     gcs_client = storage.Client()
 
     @python_task
