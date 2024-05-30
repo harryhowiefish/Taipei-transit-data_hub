@@ -56,13 +56,13 @@ if __name__ == "__main__":
     BIGQUERY_CREDENTIALS_FILE_PATH = r"C:\TIR101_Group2\secrets\harry_GCS_BigQuery_write_cred.json"
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = BIGQUERY_CREDENTIALS_FILE_PATH
     BQ_CLIENT = bigquery.Client()
-    DIM_youbike_bike_station_create(dataset_name="ETL_DIM",
-                                    source_dataset_name="ETL_ODS",
+    DIM_youbike_bike_station_create(dataset_name="ANDY_ETL_DIM",
+                                    source_dataset_name="ANDY_ETL_ODS",
                                     create_table_name="DIM_bike_station",
                                     ods_table_name="ODS_youbike_realtime",
                                     client=BQ_CLIENT)
-    FACT_youbike_bike_realtime_create(dataset_name="ETL_FACT",
-                                      source_dataset_name="ETL_ODS",
+    FACT_youbike_bike_realtime_create(dataset_name="ANDY_ETL_FACT",
+                                      source_dataset_name="ANDY_ETL_ODS",
                                       create_table_name="FACT_bike_realtime",
                                       ods_table_name="ODS_youbike_realtime",
                                       client=BQ_CLIENT)
