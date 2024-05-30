@@ -32,8 +32,8 @@ def SRC_youbike_gcs_to_bq_before0504(dataset_name: str, create_table_name: str, 
         WITH PARTITION COLUMNS
         OPTIONS (
             format = 'CSV',
-            uris = ['gs://youbike_realtime/v1_data/*.csv'],
-            hive_partition_uri_prefix = 'gs://youbike_realtime/v1_data/',
+            uris = ['gs://youbike_realtime_andy/v1_data/*.csv'],
+            hive_partition_uri_prefix = 'gs://youbike_realtime_andy/v1_data/',
             skip_leading_rows = 1,
             max_bad_records = 1
         );
@@ -72,8 +72,8 @@ def SRC_youbike_gcs_to_bq_after0504(dataset_name: str, create_table_name: str, c
         WITH PARTITION COLUMNS
         OPTIONS (
             format = 'CSV',
-            uris = ['gs://youbike_realtime/v2_data/*.csv'],
-            hive_partition_uri_prefix = 'gs://youbike_realtime/v2_data/',
+            uris = ['gs://youbike_realtime_andy/v2_data/*.csv'],
+            hive_partition_uri_prefix = 'gs://youbike_realtime_andy/v2_data/',
             skip_leading_rows = 1,
             max_bad_records = 1
         );
@@ -85,8 +85,7 @@ def SRC_youbike_gcs_to_bq_after0504(dataset_name: str, create_table_name: str, c
 
 
 if __name__ == "__main__":
-    # BIGQUERY_CREDENTIALS_FILE_PATH = r"D:\data_engineer\TIR_group2\TIR101_Group2\secrets\harry_GCS_BigQuery_write_cred.json"
-    BIGQUERY_CREDENTIALS_FILE_PATH = r"C:\TIR101_Group2\secrets\harry_GCS_BigQuery_write_cred.json"
+    BIGQUERY_CREDENTIALS_FILE_PATH = r"D:\data_engineer\dev_TIR_group2\Taipei-transit-data_hub\airflow\dags\andy-gcs_key.json"
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = BIGQUERY_CREDENTIALS_FILE_PATH
     BQ_CLIENT = bigquery.Client()
     SRC_youbike_gcs_to_bq_before0504(
