@@ -18,15 +18,21 @@ x-airflow-common: &airflow-common
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session'
+    # yamllint disable rule:line-length
+    # Use simple http server on scheduler for health checks
+    # See https://airflow.apache.org/docs/apache-airflow/stable/administration-and-deployment/logging-monitoring/check-health.html#scheduler-health-check-server
+    # yamllint enable rule:line-length
     AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
     API_HOST: http://host.docker.internal:3306
+    # WARNING: Use _PIP_ADDITIONAL_REQUIREMENTS option ONLY for a quick checks
+    # for other purpose (development, test and especially production usage) build/extend Airflow image.
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
     AIRFLOW_CONFIG: '/opt/airflow/config/airflow.cfg'
-    PYTHONPATH: /opt/airflow # 添加 PYTHONPATH 環境變數
   volumes:
     - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
     - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
     - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
+    # - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
     - ${AIRFLOW_PROJ_DIR:-.}/utils:/opt/airflow/utils
     - ${AIRFLOW_PROJ_DIR:-.}/gcp_credentials:/opt/airflow/gcp_credentials
   user: "${AIRFLOW_UID:-50000}:0"
@@ -83,9 +89,6 @@ services:
       retries: 5
       start_period: 30s
     restart: always
-    environment:
-      <<: *airflow-common-env
-      PYTHONPATH: /opt/airflow # 添加 PYTHONPATH 環境變數
     depends_on:
       <<: *airflow-common-depends-on
       airflow-init:
@@ -107,9 +110,6 @@ services:
       retries: 5
       start_period: 30s
     restart: always
-    environment:
-      <<: *airflow-common-env
-      PYTHONPATH: /opt/airflow # 添加 PYTHONPATH 環境變數
     depends_on:
       <<: *airflow-common-depends-on
       airflow-init:
@@ -119,6 +119,7 @@ services:
     <<: *airflow-common
     command: airflow celery worker -H I_am_worker_1
     healthcheck:
+      # yamllint disable rule:line-length
       test:
         - "CMD-SHELL"
         - 'celery --app airflow.providers.celery.executors.celery_executor.app inspect ping -d "celery@$${HOSTNAME}" || celery --app airflow.executors.celery_executor.app inspect ping -d "celery@$${HOSTNAME}"'
@@ -128,7 +129,8 @@ services:
       start_period: 30s
     environment:
       <<: *airflow-common-env
-      PYTHONPATH: /opt/airflow # 添加 PYTHONPATH 環境變數
+      # Required to handle warm shutdown of the celery workers properly
+      # See https://airflow.apache.org/docs/docker-stack/entrypoint.html#signal-propagation
       DUMB_INIT_SETSID: "0"
     restart: always
     depends_on:
@@ -150,9 +152,6 @@ services:
       retries: 5
       start_period: 30s
     restart: always
-    environment:
-      <<: *airflow-common-env
-      PYTHONPATH: /opt/airflow # 添加 PYTHONPATH 環境變數
     depends_on:
       <<: *airflow-common-depends-on
       airflow-init:
@@ -161,6 +160,7 @@ services:
   airflow-init:
     <<: *airflow-common
     entrypoint: /bin/bash
+    # yamllint disable rule:line-length
     command:
       - -c
       - |
@@ -209,9 +209,9 @@ services:
         mkdir -p /sources/logs /sources/dags /sources/plugins
         chown -R "${AIRFLOW_UID}:0" /sources/{logs,dags,plugins}
         exec /entrypoint airflow version
+    # yamllint enable rule:line-length
     environment:
       <<: *airflow-common-env
-      PYTHONPATH: /opt/airflow # 添加 PYTHONPATH 環境變數
       _AIRFLOW_DB_MIGRATE: 'true'
       _AIRFLOW_WWW_USER_CREATE: 'true'
       _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}
@@ -227,13 +227,16 @@ services:
       - debug
     environment:
       <<: *airflow-common-env
-      PYTHONPATH: /opt/airflow # 添加 PYTHONPATH 環境變數
       CONNECTION_CHECK_MAX_COUNT: "0"
+    # Workaround for entrypoint issue. See: https://github.com/apache/airflow/issues/16252
     command:
       - bash
       - -c
       - airflow
 
+  # You can enable flower by adding "--profile flower" option e.g. docker-compose --profile flower up
+  # or by explicitly targeted on the command line e.g. docker-compose up flower.
+  # See: https://docs.docker.com/compose/profiles/
   flower:
     <<: *airflow-common
     command: celery flower
@@ -248,9 +251,6 @@ services:
       retries: 5
       start_period: 30s
     restart: always
-    environment:
-      <<: *airflow-common-env
-      PYTHONPATH: /opt/airflow # 添加 PYTHONPATH 環境變數
     depends_on:
       <<: *airflow-common-depends-on
       airflow-init:
@@ -258,3 +258,5 @@ services:
 
 volumes:
   postgres-db-volume:
+
+
