@@ -16,8 +16,10 @@
 # specific language governing permissions and limitations
 # under the License.
 from __future__ import annotations
-
+from datetime import datetime
+from zoneinfo import ZoneInfo
 from functools import cached_property
+import pytz
 import requests
 from airflow.notifications.basenotifier import BaseNotifier
 
@@ -60,18 +62,22 @@ class DiscordNotifier(BaseNotifier):
         dag_id = context['dag'].dag_id
         task_id = task_instance.task_id
         execution_date = context['execution_date']
+        # execution_date = datetime.strptime(execution_date, "%Y-%m-%d %H:%M:%S")
+        taipei_tz = pytz.timezone("Asia/Taipei")
+        execution_date_utc = execution_date.astimezone(taipei_tz)
+        execution_date_utc = execution_date_utc.strftime("%Y-%m-%d %H:%M:%S")
         try_number = task_instance.try_number
         if self.if_sucess:
             message = (
                 f"**DAG: '{dag_id}' task:'{task_id}' has succeded!**\n"
-                f"Execution Time: {execution_date}\n"
+                f"Execution Time: {execution_date_utc}\n"
                 f"note: {self.text}"
             )
             avatar_url = self.avatar_url_success
         else:
             message = (
                 f"**DAG: {dag_id} task:{task_id} has failed!**\n"
-                f"*Execution Time: {execution_date}\n"
+                f"*Execution Time: {execution_date_utc}\n"
                 f"Try Number: {try_number}\n"
                 f"note:{self.text}"
             )
@@ -84,4 +90,3 @@ class DiscordNotifier(BaseNotifier):
             "tts": self.tts
         }
         response = requests.post(self.discord_webhook_url, json=data)
-
