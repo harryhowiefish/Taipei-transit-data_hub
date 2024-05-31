@@ -1,6 +1,6 @@
 from utils.gcp import gcs
-from utils.discord_notifications import DiscordNotifier
-from dotenv import load_dotenv
+# from utils.discord_notifications import DiscordNotifier
+# from dotenv import load_dotenv
 from datetime import timedelta, datetime
 from airflow.decorators import dag, python_task
 from google.cloud import storage
@@ -11,42 +11,43 @@ import pendulum
 import os
 from pathlib import Path
 import sys
-sys.path.insert(0, str(Path(__file__).resolve().parent / "/opt/airflow/utils"))
-
+from utils.discord_notify_function import notify_failure, notify_success, dag_success_alert, task_failure_alert
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/opt/airflow/gcp_credentials/andy-gcs_key.json'
-# 添加 utils 模組到 Python 路徑
-
-load_dotenv()
-discord_webhook_url = os.getenv("discord_webhook")
 
 
-def notify_success(context):
-    print("Task success callback triggered.")
-    discord_notifier = DiscordNotifier(
-        discord_webhook_url=discord_webhook_url,
-        text="DAG has succeeded!",
-        username="Airflow Bot"
-    )
-    discord_notifier.notify(context)
+# load_dotenv()
+# discord_webhook_url = os.getenv("discord_webhook")
 
 
-def notify_failure(context):
-    print("Task failure callback triggered.")
-    discord_notifier = DiscordNotifier(
-        discord_webhook_url=discord_webhook_url,
-        text="DAG has failed!",
-        username="Airflow Bot"
-    )
-    discord_notifier.notify(context)
+# def notify_success(context):
+#     print("Task success callback triggered.")
+#     discord_notifier = DiscordNotifier(
+#         discord_webhook_url=discord_webhook_url,
+#         if_sucess=True,
+#         # text="DAG has succeeded!",
+#         username="Airflow Bot(success)"
+#     )
+#     discord_notifier.notify(context)
 
 
-def task_failure_alert(context):
-    print(
-        f"Task has failed, task_instance_key_str: {context['task_instance_key_str']}")
+# def notify_failure(context):
+#     print("Task failure callback triggered.")
+#     discord_notifier = DiscordNotifier(
+#         discord_webhook_url=discord_webhook_url,
+#         if_sucess=False,
+#         # text="DAG has failed!",
+#         username="Airflow Bot(failure)"
+#     )
+#     discord_notifier.notify(context)
 
 
-def dag_success_alert(context):
-    print(f"DAG has succeeded, run_id: {context['run_id']}")
+# def task_failure_alert(context):
+#     print(
+#         f"Task has failed, task_instance_key_str: {context['task_instance_key_str']}")
+
+
+# def dag_success_alert(context):
+#     print(f"DAG has succeeded, run_id: {context['run_id']}")
 
 
 default_args = {
@@ -64,7 +65,7 @@ default_args = {
     default_args=default_args,
     schedule_interval='*/3 * * * *',
     start_date=datetime(2024, 4, 10),
-    tags=["reoccuring", "data_ingestion"],
+    tags=["reoccuring", "data_ingestion", "youbike_real_time"],
     on_success_callback=dag_success_alert,  # 在 DAG 成功時調用
     on_failure_callback=task_failure_alert,   # 在 DAG 失敗時調用
     catchup=False)
