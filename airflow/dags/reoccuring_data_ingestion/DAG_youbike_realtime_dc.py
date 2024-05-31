@@ -13,22 +13,17 @@ from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent / "/opt/airflow/utils"))
 
-
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/opt/airflow/gcp_credentials/andy-gcs_key.json'
 # 添加 utils 模組到 Python 路徑
 
 load_dotenv()
-discord_conn_id = os.getenv("discord_webhook")
-
-default_args = {
-    'owner': 'TIR101_G2',
-    'retries': 0,
-    'retry_delay': timedelta(minutes=1)
-}
+discord_webhook_url = os.getenv("discord_webhook")
 
 
 def notify_success(context):
+    print("Task success callback triggered.")
     discord_notifier = DiscordNotifier(
-        discord_conn_id=discord_conn_id,
+        discord_webhook_url=discord_webhook_url,
         text="DAG has succeeded!",
         username="Airflow Bot"
     )
@@ -36,12 +31,31 @@ def notify_success(context):
 
 
 def notify_failure(context):
+    print("Task failure callback triggered.")
     discord_notifier = DiscordNotifier(
-        discord_conn_id=discord_conn_id,
+        discord_webhook_url=discord_webhook_url,
         text="DAG has failed!",
         username="Airflow Bot"
     )
     discord_notifier.notify(context)
+
+
+def task_failure_alert(context):
+    print(
+        f"Task has failed, task_instance_key_str: {context['task_instance_key_str']}")
+
+
+def dag_success_alert(context):
+    print(f"DAG has succeeded, run_id: {context['run_id']}")
+
+
+default_args = {
+    'owner': 'TIR101_G2',
+    'retries': 0,
+    'retry_delay': timedelta(minutes=1),
+    'on_success_callback': notify_success,
+    'on_failure_callback': notify_failure
+}
 
 
 @dag(
@@ -51,8 +65,8 @@ def notify_failure(context):
     schedule_interval='*/3 * * * *',
     start_date=datetime(2024, 4, 10),
     tags=["reoccuring", "data_ingestion"],
-    on_success_callback=notify_success,  # 在 DAG 成功時調用
-    on_failure_callback=notify_failure,   # 在 DAG 失敗時調用
+    on_success_callback=dag_success_alert,  # 在 DAG 成功時調用
+    on_failure_callback=task_failure_alert,   # 在 DAG 失敗時調用
     catchup=False)
 def bike_realtime_to_gcs():
     # setup the client that will be use in the dags
